@@ -1,0 +1,35 @@
+<view class="page practice">
+  <view class="meta">
+    <view class="progress">第 {{index + 1}} / {{total}} 字</view>
+    <view class="fav {{isFav ? 'active' : ''}}" bindtap="toggleFav">
+      {{isFav ? '已收藏' : '收藏'}}
+    </view>
+  </view>
+
+  <view class="stage card {{showGrid ? 'with-grid' : ''}}">
+    <hanzi-writer-view id="hz-writer" width="{{size}}" height="{{size}}" />
+    <view class="loading" wx:if="{{loading}}">字库加载中…</view>
+    <view class="error" wx:if="{{error}}">{{error}}</view>
+  </view>
+
+  <view class="modes">
+    <view
+      class="mode {{mode === item.key ? 'active' : ''}}"
+      wx:for="{{modes}}"
+      wx:key="key"
+      data-mode="{{item.key}}"
+      bindtap="switchMode"
+    >{{item.name}}</view>
+  </view>
+
+  <view class="toolbar">
+    <view class="btn ghost" data-delta="-1" bindtap="go">上一个</view>
+    <view class="btn" bindtap="replay">再写一遍</view>
+    <view class="btn ghost" data-delta="1" bindtap="go">下一个</view>
+  </view>
+
+  <view class="footer">
+    <view class="muted" bindtap="toggleGrid">{{showGrid ? '隐藏' : '显示'}}田字格</view>
+    <view class="muted">已练 {{practiced}} 次</view>
+  </view>
+</view>

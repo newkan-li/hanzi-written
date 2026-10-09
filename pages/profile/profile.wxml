@@ -1,0 +1,45 @@
+<view class="page">
+  <view class="stats card">
+    <view class="stat">
+      <view class="stat-num">{{stats.charCount}}</view>
+      <view class="muted">已练字数</view>
+    </view>
+    <view class="stat">
+      <view class="stat-num">{{stats.totalCount}}</view>
+      <view class="muted">练习次数</view>
+    </view>
+    <view class="stat">
+      <view class="stat-num">{{stats.favCount}}</view>
+      <view class="muted">收藏</view>
+    </view>
+  </view>
+
+  <view class="section-title">我的收藏</view>
+  <view class="chips" wx:if="{{favorites.length}}">
+    <view
+      class="chip"
+      wx:for="{{favorites}}"
+      wx:key="*this"
+      data-char="{{item}}"
+      bindtap="onTapChar"
+    >{{item}}</view>
+  </view>
+  <view class="muted empty" wx:else>还没有收藏，去字库挑几个字吧</view>
+  <view class="btn ghost" wx:if="{{favorites.length}}" bindtap="onClearFavorites">清空收藏</view>
+
+  <view class="section-title">最近练习</view>
+  <view class="records" wx:if="{{records.length}}">
+    <view
+      class="record"
+      wx:for="{{records}}"
+      wx:key="char"
+      data-char="{{item.char}}"
+      bindtap="onTapChar"
+    >
+      <view class="record-char">{{item.char}}</view>
+      <view class="muted">练了 {{item.count}} 次</view>
+    </view>
+  </view>
+  <view class="muted empty" wx:else>还没有练习记录</view>
+  <view class="btn ghost" wx:if="{{records.length}}" bindtap="onClearRecords">清空记录</view>
+</view>

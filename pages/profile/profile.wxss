@@ -1,0 +1,58 @@
+.stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+.stat {
+  flex: 1;
+}
+.stat-num {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #b23a33;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+.chip {
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fdfbf5;
+  border: 1rpx solid #e7e0d0;
+  border-radius: 16rpx;
+  font-size: 48rpx;
+  font-family: "Songti SC", serif;
+}
+
+.records {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24rpx;
+}
+.record {
+  flex: 1;
+  min-width: 140rpx;
+  padding: 24rpx;
+  background-color: #fdfbf5;
+  border: 1rpx solid #e7e0d0;
+  border-radius: 16rpx;
+  text-align: center;
+}
+.record-char {
+  font-size: 56rpx;
+  font-family: "Songti SC", serif;
+}
+
+.empty {
+  padding: 30rpx 0;
+}
+
+.btn.ghost {
+  margin-top: 28rpx;
+}

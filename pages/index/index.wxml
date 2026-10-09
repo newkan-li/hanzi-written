@@ -1,0 +1,41 @@
+<view class="page">
+  <view class="hero">
+    <view class="hero-title">墨学</view>
+    <view class="hero-sub">跟着笔顺，写好每一个汉字</view>
+  </view>
+
+  <view class="search card">
+    <input
+      class="search-input"
+      placeholder="输入汉字，如：永"
+      value="{{query}}"
+      confirm-type="search"
+      bindinput="onInput"
+      bindconfirm="onSearch"
+    />
+    <view class="btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <view class="daily card" bindtap="onPracticeDaily">
+    <view class="daily-info">
+      <view class="tag">每日一字</view>
+      <view class="daily-tip">点一点，跟写今天的字</view>
+    </view>
+    <view class="daily-char">{{daily}}</view>
+  </view>
+
+  <view class="section-title">字库分类</view>
+  <view class="grid">
+    <view
+      class="grid-item card"
+      wx:for="{{categories}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onOpenCategory"
+    >
+      <view class="grid-name">{{item.name}}</view>
+      <view class="grid-desc">{{item.desc}}</view>
+      <view class="grid-count">{{item.chars.length}} 字</view>
+    </view>
+  </view>
+</view>

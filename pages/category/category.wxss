@@ -1,0 +1,52 @@
+.head {
+  padding: 16rpx 8rpx 32rpx;
+}
+.head-name {
+  font-size: 44rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+}
+
+.chars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24rpx;
+}
+.char-card {
+  position: relative;
+  width: calc((100% - 72rpx) / 4);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fdfbf5;
+  border: 1rpx solid #e7e0d0;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+.char {
+  position: relative;
+  z-index: 1;
+  font-size: 64rpx;
+  color: #2b2b2b;
+  font-family: "Songti SC", serif;
+}
+/* 田字格辅助线 */
+.grid-lines::before,
+.grid-lines::after {
+  content: "";
+  position: absolute;
+  background-color: rgba(178, 58, 51, 0.18);
+}
+.grid-lines::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1rpx;
+}
+.grid-lines::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1rpx;
+}

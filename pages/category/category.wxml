@@ -1,0 +1,19 @@
+<view class="page">
+  <view class="head">
+    <view class="head-name">{{name}}</view>
+    <view class="muted">{{desc}} · 共 {{chars.length}} 字</view>
+  </view>
+
+  <view class="chars">
+    <view
+      class="char-card"
+      wx:for="{{chars}}"
+      wx:key="*this"
+      data-char="{{item}}"
+      bindtap="onTapChar"
+    >
+      <view class="char">{{item}}</view>
+      <view class="grid-lines"></view>
+    </view>
+  </view>
+</view>
