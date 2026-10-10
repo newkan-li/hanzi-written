@@ -262,7 +262,7 @@ Page({
     // 水印只放在页脚区域，不遮挡书写区
     if (this.data.watermark) {
       ctx.save()
-      ctx.fillStyle = 'rgba(178,58,51,0.10)'
+      ctx.fillStyle = 'rgba(0,0,0,0.13)'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.font = this.pxFont(Math.round(1.1 * CM), true)
