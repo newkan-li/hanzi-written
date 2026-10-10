@@ -74,6 +74,8 @@ Page({
     repeat: 1,
     footerText: '',
     watermark: false,
+    headerTitle: '',
+    showDate: true,
     chars: [],
     preview: '',
     generated: false,
@@ -89,7 +91,9 @@ Page({
     app.globalData.worksheetPoem = null
     this.setData({
       footerText: storage.getPref('worksheetFooter', ''),
-      watermark: storage.getPref('worksheetMark', false)
+      watermark: storage.getPref('worksheetMark', false),
+      headerTitle: storage.getPref('worksheetTitle', ''),
+      showDate: storage.getPref('worksheetDate', true)
     })
     if (poem && poem.lines && poem.lines.length) {
       this.setData({ poem, layout: 'poem' })
@@ -148,6 +152,18 @@ Page({
     const footerText = e.detail.value
     this.setData({ footerText })
     storage.setPref('worksheetFooter', footerText)
+  },
+
+  onTitleInput(e) {
+    const headerTitle = e.detail.value
+    this.setData({ headerTitle })
+    storage.setPref('worksheetTitle', headerTitle)
+  },
+
+  toggleDate() {
+    const showDate = !this.data.showDate
+    this.setData({ showDate })
+    storage.setPref('worksheetDate', showDate)
   },
 
   toggleWatermark() {
@@ -266,18 +282,21 @@ Page({
     return px + 'px ' + (serif ? '"Songti SC", serif' : 'sans-serif')
   },
 
-  drawHeader(ctx, W, H, title, subtitle) {
+  drawHeader(ctx, W, H, defTitle, defSub) {
     ctx.fillStyle = '#fdfbf5'
     ctx.fillRect(0, 0, W, H)
+    const title = this.data.headerTitle || defTitle
+    let sub = defSub || ''
+    if (this.data.showDate) sub = sub ? sub + ' · ' + formatDate() : formatDate()
     ctx.fillStyle = '#2b2b2b'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.font = this.pxFont(Math.round(1.0 * CM), true)
     ctx.fillText(title, W / 2, Math.round(1.3 * CM))
-    if (subtitle) {
+    if (sub) {
       ctx.fillStyle = '#8a8578'
       ctx.font = this.pxFont(Math.round(0.5 * CM), false)
-      ctx.fillText(subtitle, W / 2, Math.round(2.1 * CM))
+      ctx.fillText(sub, W / 2, Math.round(2.1 * CM))
     }
   },
 
@@ -310,7 +329,7 @@ Page({
 
   drawGridSheet(ctx, seq, first, cols, rows, cell, startX, W, H) {
     const gridStyle = this.data.gridStyle
-    this.drawHeader(ctx, W, H, '汉字练习字帖', formatDate())
+    this.drawHeader(ctx, W, H, '汉字练习字帖', '')
     const total = rows * cols
     for (let k = 0; k < total && k < seq.length; k += 1) {
       const r = Math.floor(k / cols)
@@ -333,7 +352,7 @@ Page({
     const totalH = lines.length * blockH
     const startY = HEADER + Math.max(0, Math.floor((H - HEADER - FOOTER - totalH) / 2))
     const sub = [poem.dynasty, poem.author].filter(Boolean).join(' · ')
-    this.drawHeader(ctx, W, H, poem.title || '古诗字帖', sub || formatDate())
+    this.drawHeader(ctx, W, H, poem.title || '古诗字帖', sub)
 
     lines.forEach((lineChars, i) => {
       const y0 = startY + i * blockH

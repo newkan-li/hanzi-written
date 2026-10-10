@@ -108,6 +108,21 @@
     </view>
   </view>
 
+  <view class="section-title">页眉</view>
+  <input
+    class="footer-input"
+    placeholder="页眉标题（默认按内容自动）"
+    value="{{headerTitle}}"
+    bindinput="onTitleInput"
+    maxlength="20"
+  />
+  <view class="opt-row">
+    <text class="opt-label">日期</text>
+    <view class="chips">
+      <view class="chip sm {{showDate ? 'active' : ''}}" bindtap="toggleDate">{{showDate ? '显示' : '隐藏'}}</view>
+    </view>
+  </view>
+
   <view class="section-title">署名 / 版权</view>
   <input
     class="footer-input"
