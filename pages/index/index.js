@@ -160,16 +160,22 @@ Page({
   shuffleLesson() {
     const ids = allLessonIds()
     if (!ids.length) return
-    const id = ids[Math.floor(Math.random() * ids.length)]
-    const lesson = buildLesson(id)
+    const cur = this.data.dailyLesson && this.data.dailyLesson.id
+    let idx = ids.indexOf(cur)
+    idx = idx < 0 ? 0 : (idx + 1) % ids.length
+    const lesson = buildLesson(ids[idx])
     if (lesson) {
-      storage.setPref('homeLesson', id)
+      storage.setPref('homeLesson', ids[idx])
       this.setData({ dailyLesson: lesson })
     }
   },
 
   shufflePoem() {
-    const poem = poems[Math.floor(Math.random() * poems.length)]
+    if (!poems.length) return
+    const cur = this.data.todayPoem && this.data.todayPoem.id
+    let idx = poems.findIndex((p) => p.id === cur)
+    idx = idx < 0 ? 0 : (idx + 1) % poems.length
+    const poem = poems[idx]
     if (poem) {
       storage.setPref('homePoem', poem.id)
       this.setData({ todayPoem: poem })
