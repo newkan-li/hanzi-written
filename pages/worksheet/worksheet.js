@@ -164,7 +164,7 @@ Page({
   },
 
   onCustom(e) {
-    this.setData({ customText: e.detail.value })
+    this.setData({ customText: e.detail.value }, () => this.resolveChars())
   },
 
   onFooterInput(e) {
