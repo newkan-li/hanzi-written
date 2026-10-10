@@ -104,7 +104,10 @@ function cleanMeaning(text, char) {
     }
   }
   s = s.replace(/^[\s:：·、,，。;；]+/, '')
-  if (s.length > 30) s = s.slice(0, 30) + '…'
+  // 取第一句（更接近“一句话释义”）
+  const m = s.match(/^[^。；;]{2,28}[。；;]/)
+  if (m) s = m[0]
+  else if (s.length > 30) s = s.slice(0, 30) + '…'
   return s
 }
 

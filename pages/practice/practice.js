@@ -267,6 +267,7 @@ Page({
   },
 
   onQuizComplete() {
+    storage.reviewWeak(this.data.char)
     wx.showToast({ title: '写好了！', icon: 'success' })
   },
 

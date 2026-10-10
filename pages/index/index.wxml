@@ -61,6 +61,15 @@
     </view>
   </view>
 
+  <view class="review card" wx:if="{{dueCount}}" bindtap="onOpenWeak">
+    <view class="review-num">{{dueCount}}</view>
+    <view class="review-text">
+      <view class="review-title">今日复习</view>
+      <view class="muted">生字本里有 {{dueCount}} 个字待复习</view>
+    </view>
+    <view class="btn">去复习</view>
+  </view>
+
   <view class="grades">
     <view class="grades-label">教材同步</view>
     <scroll-view scroll-x class="grades-scroll" enable-flex>

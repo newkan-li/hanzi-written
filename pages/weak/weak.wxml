@@ -1,16 +1,24 @@
 <view class="page">
-  <view class="muted tip">在「描红 / 测验」中写错的字会自动收进生字本，方便重点复习。</view>
+  <view class="due card" wx:if="{{dueCount}}">
+    <view>
+      <view class="due-num">{{dueCount}}</view>
+      <view class="muted">个生字今天待复习</view>
+    </view>
+    <view class="btn" bindtap="onPracticeDue">今日复习</view>
+  </view>
+
+  <view class="muted tip">在「描红 / 测验」中写错的字会自动收进生字本；答对后按间隔（1/2/4/7/15/30 天）安排下次复习。</view>
 
   <view class="chars" wx:if="{{list.length}}">
     <view
-      class="char-card card"
+      class="char-card {{item.due ? 'due' : ''}}"
       wx:for="{{list}}"
       wx:key="char"
       data-char="{{item.char}}"
       bindtap="onTapChar"
     >
       <view class="char">{{item.char}}</view>
-      <view class="muted cnt">错 {{item.count}}</view>
+      <view class="muted cnt">Lv{{item.level}}{{item.due ? ' · 待复习' : ''}}</view>
       <view class="del" catchtap="onRemove" data-char="{{item.char}}">×</view>
     </view>
   </view>

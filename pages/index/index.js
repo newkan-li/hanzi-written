@@ -79,8 +79,13 @@ Page({
       recent,
       dailyLesson: lesson,
       daily: charFromLesson(lesson),
-      todayPoem: this.resolvePoem()
+      todayPoem: this.resolvePoem(),
+      dueCount: storage.getDueWeak().length
     })
+  },
+
+  onOpenWeak() {
+    wx.navigateTo({ url: '/pages/weak/weak' })
   },
 
   resolveLesson() {

@@ -195,3 +195,22 @@
   color: var(--accent);
   font-size: 26rpx;
 }
+
+.review {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-top: 24rpx;
+}
+.review-num {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: var(--accent);
+}
+.review-text {
+  flex: 1;
+}
+.review-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}

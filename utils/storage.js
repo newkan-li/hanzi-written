@@ -135,22 +135,65 @@ function getCheckinStats() {
   }
 }
 
-/* ---------- 生字本 / 错字本 ---------- */
+/* ---------- 生字本 / 错字本（带 SRS 间隔复习） ---------- */
+// 复习间隔（天）：答对逐级升档，答错回到 0 级（当天再练）
+const SRS_DAYS = [0, 1, 2, 4, 7, 15, 30]
+
+function shiftDate(n) {
+  const d = new Date()
+  d.setDate(d.getDate() + n)
+  return dateKey(d)
+}
+
 function getWeak() {
   const map = wx.getStorageSync(WEAK_KEY) || {}
+  const today = dateKey()
   return Object.keys(map)
-    .map((char) => ({ char, count: map[char].count, lastTime: map[char].lastTime }))
-    .sort((a, b) => b.lastTime - a.lastTime)
+    .map((char) => {
+      const rec = map[char]
+      const nextDue = rec.nextDue || ''
+      return {
+        char,
+        count: rec.count,
+        lastTime: rec.lastTime,
+        level: rec.level || 0,
+        nextDue,
+        due: !nextDue || nextDue <= today
+      }
+    })
+    .sort((a, b) => (a.nextDue || '').localeCompare(b.nextDue || '') || b.lastTime - a.lastTime)
+}
+
+function getDueWeak() {
+  return getWeak().filter((it) => it.due)
+}
+
+function isWeak(char) {
+  const map = wx.getStorageSync(WEAK_KEY) || {}
+  return !!map[char]
 }
 
 function addWeak(char) {
   const map = wx.getStorageSync(WEAK_KEY) || {}
-  const rec = map[char] || { count: 0, lastTime: 0 }
+  const rec = map[char] || { count: 0, lastTime: 0, level: 0, nextDue: '' }
   rec.count += 1
   rec.lastTime = Date.now()
+  rec.level = 0
+  rec.nextDue = dateKey()
   map[char] = rec
   wx.setStorageSync(WEAK_KEY, map)
   return rec
+}
+
+// 复习通过（答对/完成）→ 升档，安排下次复习
+function reviewWeak(char) {
+  const map = wx.getStorageSync(WEAK_KEY) || {}
+  const rec = map[char]
+  if (!rec) return
+  rec.level = Math.min((rec.level || 0) + 1, SRS_DAYS.length - 1)
+  rec.nextDue = shiftDate(SRS_DAYS[rec.level])
+  map[char] = rec
+  wx.setStorageSync(WEAK_KEY, map)
 }
 
 function removeWeak(char) {
@@ -292,6 +335,9 @@ module.exports = {
   getCheckinStats,
   getWeak,
   addWeak,
+  reviewWeak,
+  getDueWeak,
+  isWeak,
   removeWeak,
   clearWeak,
   getTrajectory,
