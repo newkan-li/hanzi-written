@@ -79,10 +79,15 @@ Page({
   },
 
   onReady() {
-    this.createWriter()
+    this._unloaded = false
+    // 稍等布局稳定后再创建，规避 Canvas 2D 同层渲染的位置错位
+    setTimeout(() => {
+      if (!this._unloaded) this.createWriter()
+    }, 60)
   },
 
   onUnload() {
+    this._unloaded = true
     this.destroyWriter()
     if (this._audio) {
       this._audio.destroy()
