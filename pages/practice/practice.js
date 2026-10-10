@@ -64,31 +64,40 @@ Page({
     const { char, mode } = this.data
     this.setData({ loading: true, error: '' })
 
-    this.writerCtx = createHanziWriterContext({
-      id: 'hz-writer',
-      character: char,
-      page: this,
-      padding: 8,
-      showOutline: true,
-      strokeColor: '#2b2b2b',
-      radicalColor: '#b23a33',
-      highlightColor: '#e0b84c',
-      drawingColor: '#2b2b2b',
-      drawingWidth: 24,
-      strokeAnimationSpeed: 1,
-      delayBetweenStrokes: 250,
-      charDataLoader: (c) => loadCharData(c),
-      onLoadCharDataSuccess: () => {
-        this.setData({ loading: false })
-        this.runMode(mode)
-      },
-      onLoadCharDataError: () => {
-        this.setData({
-          loading: false,
-          error: '字库加载失败，请检查网络或域名白名单'
-        })
-      }
-    })
+    try {
+      this.writerCtx = createHanziWriterContext({
+        id: 'hz-writer',
+        character: char,
+        page: this,
+        padding: 8,
+        showOutline: true,
+        strokeColor: '#2b2b2b',
+        radicalColor: '#b23a33',
+        highlightColor: '#e0b84c',
+        drawingColor: '#2b2b2b',
+        drawingWidth: 24,
+        strokeAnimationSpeed: 1,
+        delayBetweenStrokes: 250,
+        charDataLoader: (c, onLoad, onError) => {
+          loadCharData(c).then(onLoad).catch(onError)
+        },
+        onLoadCharDataSuccess: () => {
+          this.setData({ loading: false })
+          this.runMode(mode)
+        },
+        onLoadCharDataError: () => {
+          this.setData({
+            loading: false,
+            error: '字库加载失败，请检查网络或域名白名单'
+          })
+        }
+      })
+    } catch (e) {
+      this.setData({
+        loading: false,
+        error: '初始化失败：' + (e && e.message ? e.message : e)
+      })
+    }
   },
 
   destroyWriter() {
