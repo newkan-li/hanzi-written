@@ -1,5 +1,6 @@
 const storage = require('../../utils/storage')
 const config = require('../../utils/config')
+const cloud = require('../../utils/cloud')
 
 Page({
   data: {
@@ -25,7 +26,25 @@ Page({
       records: storage.getRecords().slice(0, 50),
       remindOn: storage.getPref('remindOn', false),
       remindTime: storage.getPref('remindTime', '20:00'),
-      tmplReady: !!(s.enabled && s.tmplId)
+      tmplReady: !!(s.enabled && s.tmplId),
+      cloudReady: cloud.ready()
+    })
+  },
+
+  onCloudSync() {
+    if (!cloud.ready()) {
+      wx.showToast({ title: '未开启云同步', icon: 'none' })
+      return
+    }
+    wx.showLoading({ title: '同步中…' })
+    cloud.sync().then((r) => {
+      wx.hideLoading()
+      if (r.ok) {
+        wx.showToast({ title: '同步完成', icon: 'success' })
+        this.refresh()
+      } else {
+        wx.showToast({ title: '同步失败', icon: 'none' })
+      }
     })
   },
 
@@ -101,6 +120,7 @@ Page({
     if (!on) {
       storage.setPref('remindOn', false)
       this.setData({ remindOn: false })
+      syncRemindCol(false, this.data.remindTime)
       return
     }
     const s = config.subscribe || {}
@@ -118,6 +138,7 @@ Page({
         const ok = res[s.tmplId] === 'accept'
         storage.setPref('remindOn', ok)
         this.setData({ remindOn: ok })
+        if (ok) syncRemindCol(true, this.data.remindTime)
         wx.showToast({ title: ok ? '已开启打卡提醒' : '未授权', icon: 'none' })
       },
       fail: () => wx.showToast({ title: '订阅失败', icon: 'none' })
@@ -128,6 +149,7 @@ Page({
     const remindTime = e.detail.value
     storage.setPref('remindTime', remindTime)
     this.setData({ remindTime })
+    if (this.data.remindOn) syncRemindCol(true, remindTime)
   },
 
   onShareAppMessage() {
@@ -138,3 +160,21 @@ Page({
     return { title: '墨学 · 学写汉字，坚持每日打卡' }
   }
 })
+
+// 打卡提醒同步到云（供云函数定时发送）
+function syncRemindCol(on, time) {
+  if (!cloud.ready()) return
+  const c = wx.cloud.database().collection('remind')
+  c.where({})
+    .limit(1)
+    .get()
+    .then((res) => {
+      const doc = res.data && res.data[0]
+      const data = { on: !!on, time: time || '20:00', updatedAt: Date.now() }
+      if (doc) return c.doc(doc._id).update({ data })
+      return c.add({ data })
+    })
+    .catch(() => {
+      /* 忽略 */
+    })
+}

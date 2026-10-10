@@ -1,7 +1,10 @@
 {
   "description": "学写汉字小程序（笔顺动画 / 描红 / 测验）",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "folder", "value": "cloudfunctions" },
+      { "type": "folder", "value": "tools" }
+    ],
     "include": []
   },
   "setting": {

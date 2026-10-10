@@ -305,6 +305,67 @@ function clearDaily() {
   wx.removeStorageSync(DAILY_KEY)
 }
 
+/* ---------- 导入/导出（用于云同步） ---------- */
+function exportAll() {
+  return {
+    favorites: wx.getStorageSync(FAV_KEY) || [],
+    records: wx.getStorageSync(REC_KEY) || {},
+    weak: wx.getStorageSync(WEAK_KEY) || {},
+    daily: wx.getStorageSync(DAILY_KEY) || {},
+    prefs: wx.getStorageSync(PREF_KEY) || {}
+  }
+}
+
+function importAll(d) {
+  if (!d) return
+  if (d.favorites) wx.setStorageSync(FAV_KEY, d.favorites)
+  if (d.records) wx.setStorageSync(REC_KEY, d.records)
+  if (d.weak) wx.setStorageSync(WEAK_KEY, d.weak)
+  if (d.daily) wx.setStorageSync(DAILY_KEY, d.daily)
+  if (d.prefs) wx.setStorageSync(PREF_KEY, d.prefs)
+}
+
+function earlierDue(a, b) {
+  if (!a) return b || ''
+  if (!b) return a
+  return a < b ? a : b
+}
+
+function mergeAll(local, remote) {
+  const a = local || exportAll()
+  if (!remote) return a
+  const favorites = Array.from(new Set([].concat(a.favorites || [], remote.favorites || [])))
+  const mergeMap = (x, y, mk) => {
+    const out = {}
+    Object.keys(x || {}).forEach((k) => {
+      out[k] = Object.assign({}, x[k])
+    })
+    Object.keys(y || {}).forEach((k) => {
+      out[k] = out[k] ? mk(out[k], y[k]) : Object.assign({}, y[k])
+    })
+    return out
+  }
+  const records = mergeMap(a.records, remote.records, (p, q) => ({
+    count: Math.max(p.count || 0, q.count || 0),
+    lastTime: Math.max(p.lastTime || 0, q.lastTime || 0)
+  }))
+  const weak = mergeMap(a.weak, remote.weak, (p, q) => ({
+    count: Math.max(p.count || 0, q.count || 0),
+    lastTime: Math.max(p.lastTime || 0, q.lastTime || 0),
+    level: Math.max(p.level || 0, q.level || 0),
+    nextDue: earlierDue(p.nextDue, q.nextDue)
+  }))
+  const daily = mergeMap(a.daily, remote.daily, (p, q) => {
+    const chars = Object.assign({}, p.chars || {})
+    Object.keys(q.chars || {}).forEach((c) => {
+      chars[c] = Math.max(chars[c] || 0, q.chars[c] || 0)
+    })
+    return { count: Math.max(p.count || 0, q.count || 0), chars }
+  })
+  const prefs = Object.assign({}, remote.prefs || {}, a.prefs || {})
+  return { favorites, records, weak, daily, prefs }
+}
+
 /* ---------- 汇总 ---------- */
 function getStats() {
   const records = wx.getStorageSync(REC_KEY) || {}
@@ -347,5 +408,8 @@ module.exports = {
   addDailyPractice,
   getDailyLog,
   clearDaily,
+  exportAll,
+  importAll,
+  mergeAll,
   getStats
 }

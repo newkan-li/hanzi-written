@@ -54,6 +54,32 @@ function writeLocal(char, data) {
 }
 
 function fetchRemote(char) {
+  const cloud = config.cloud || {}
+  // 优先：云开发存储（免域名白名单）
+  if (cloud.enabled && cloud.env && cloud.charDataRoot && wx.cloud) {
+    return new Promise((resolve, reject) => {
+      wx.cloud.downloadFile({
+        fileID: `${cloud.charDataRoot}/${char}.json`,
+        success: (res) => {
+          const fs = wx.getFileSystemManager()
+          fs.readFile({
+            filePath: res.tempFilePath,
+            encoding: 'utf8',
+            success: (r) => {
+              try {
+                resolve(JSON.parse(r.data))
+              } catch (e) {
+                reject(new Error('字库解析失败'))
+              }
+            },
+            fail: () => reject(new Error('字库读取失败'))
+          })
+        },
+        fail: (err) => reject(new Error((err && err.errMsg) || '云字库下载失败'))
+      })
+    })
+  }
+  // 否则：CDN 请求
   return new Promise((resolve, reject) => {
     wx.request({
       url: `${config.charDataCDN}/${encodeURIComponent(char)}.json`,

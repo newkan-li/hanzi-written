@@ -33,6 +33,19 @@ module.exports = {
     version: '0.1.0'
   },
 
+  // 微信云开发（可选；默认关闭，不影响本地功能）
+  // 开通云开发后：把 enabled 置 true、填 env（环境ID）。
+  cloud: {
+    enabled: false,
+    // 环境 ID，如 'moxue-1a2b3c'
+    env: '',
+    // 云存储中「笔画数据目录」的 fileID 前缀（用 tools/fetch-strokes.mjs 上传后得到），
+    // 形如 'cloud://moxue-1a2b3c.xxxx/hanzi-data'（末尾不带斜杠）
+    charDataRoot: '',
+    // 是否启用云数据库同步（记录/收藏/生字本/学习记录/偏好）
+    sync: false
+  },
+
   // 订阅消息（打卡提醒）
   // 在公众平台「订阅消息」申请模板后，把模板ID填到这里；推送需服务端定时发送（见 docs/上线指引.md）。
   subscribe: {

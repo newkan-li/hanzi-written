@@ -5,6 +5,7 @@ yarn.lock
 .DS_Store
 project.private.config.json
 dist-strokes/
+cloudfunctions/**/node_modules/
 
 # Office/LibreOffice lock files
 .~lock.*#

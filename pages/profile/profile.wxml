@@ -54,6 +54,7 @@
   <view class="btn ghost block weak-entry" bindtap="onOpenHistory">学习记录</view>
   <view class="btn ghost block weak-entry" bindtap="onOpenTraj">练习轨迹</view>
   <view class="btn ghost block weak-entry" bindtap="onOpenAbout">关于与隐私</view>
+  <view class="btn ghost block weak-entry" wx:if="{{cloudReady}}" bindtap="onCloudSync">云同步数据</view>
 
   <view class="section-title">我的收藏</view>
   <view class="chips" wx:if="{{favorites.length}}">
