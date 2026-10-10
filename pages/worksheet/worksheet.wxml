@@ -27,7 +27,7 @@
   <textarea
     wx:if="{{source === 'custom'}}"
     class="custom-input"
-    placeholder="单行=字表（如 永和静学）；多行=每行一句，可排诗句，空行留白"
+    placeholder="手动输入要练的字：单行=字表（如 永和静学）；多行=每行一句，空行留白"
     value="{{customText}}"
     bindinput="onCustom"
     maxlength="300"
