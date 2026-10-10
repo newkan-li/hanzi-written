@@ -200,7 +200,7 @@ Page({
   resolveChars() {
     const { source, templateIndex, customText } = this.data
     let chars = []
-    let poem = this.data.poem
+    let poem = null
     if (source === 'current') {
       chars = (this.currentList || []).slice()
       if (!chars.length) chars = '永和静学思德谦恒诚'.split('')
@@ -218,7 +218,10 @@ Page({
       }
     }
     chars = cnChars(chars.join(''))
-    this.setData({ chars: Array.from(new Set(chars)), poem })
+    // 仅当存在诗句时才允许「诗句排版」，否则回到字表排版，避免串诗
+    const patch = { chars: Array.from(new Set(chars)), poem }
+    if (!poem && this.data.layout === 'poem') patch.layout = 'grid'
+    this.setData(patch)
   },
 
   pageSize() {
