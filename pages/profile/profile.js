@@ -44,6 +44,10 @@ Page({
     wx.navigateTo({ url: '/pages/weak/weak' })
   },
 
+  onOpenTraj() {
+    wx.navigateTo({ url: '/pages/traj/traj' })
+  },
+
   onClearRecords() {
     wx.showModal({
       title: '清空练习记录',

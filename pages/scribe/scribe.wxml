@@ -1,0 +1,55 @@
+<view class="page scribe">
+  <view class="tools-row">
+    <input
+      class="guide-input"
+      placeholder="范字(可选)"
+      maxlength="1"
+      value="{{guideChar}}"
+      bindinput="onGuideInput"
+    />
+    <view class="tool {{showGuide ? 'active' : ''}}" bindtap="toggleGuide">范字</view>
+    <view class="tool {{grid ? 'active' : ''}}" bindtap="toggleGrid">格子</view>
+    <view class="tool" bindtap="undo">撤销</view>
+    <view class="tool" bindtap="clear">清空</view>
+  </view>
+
+  <view class="board card">
+    <canvas
+      type="2d"
+      id="scribe-canvas"
+      class="scribe-canvas"
+      style="width: {{size}}px; height: {{size}}px;"
+      bindtouchstart="onStart"
+      bindtouchmove="onMove"
+      bindtouchend="onEnd"
+      bindtouchcancel="onEnd"
+    ></canvas>
+  </view>
+
+  <view class="tools-row">
+    <view
+      class="swatch {{color === item.key ? 'active' : ''}}"
+      wx:for="{{colors}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="pickColor"
+      style="background: {{item.key}}"
+    ></view>
+    <view
+      class="width {{width === item ? 'active' : ''}}"
+      wx:for="{{widths}}"
+      wx:key="*this"
+      data-value="{{item}}"
+      bindtap="pickWidth"
+    >
+      <view class="dot" style="width: {{item}}px; height: {{item}}px; background: {{color}}"></view>
+    </view>
+  </view>
+
+  <view class="actions">
+    <view class="btn" bindtap="saveTraj">加入练习轨迹</view>
+    <view class="btn ghost" bindtap="saveImage">保存图片</view>
+  </view>
+
+  <view class="muted hint">用手指在格子里书写；「范字」淡显一个字供临摹。</view>
+</view>

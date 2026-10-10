@@ -1,0 +1,23 @@
+<view class="page">
+  <view class="btn block" bindtap="goScribe">去自由书写</view>
+
+  <view class="grid" wx:if="{{list.length}}">
+    <view class="item card" wx:for="{{list}}" wx:key="id">
+      <image
+        class="shot"
+        src="{{item.path}}"
+        mode="aspectFill"
+        data-path="{{item.path}}"
+        bindtap="onPreview"
+      />
+      <view class="meta">
+        <text class="ch">{{item.char || '自由书写'}}</text>
+        <text class="muted time">{{item.timeText}}</text>
+      </view>
+      <view class="del" catchtap="onDelete" data-id="{{item.id}}">删除</view>
+    </view>
+  </view>
+  <view class="muted empty" wx:else>还没有练习轨迹，去自由书写并加入轨迹吧</view>
+
+  <view class="btn ghost block" wx:if="{{list.length}}" bindtap="onClear">清空轨迹</view>
+</view>

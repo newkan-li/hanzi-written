@@ -6,6 +6,7 @@ const REC_KEY = 'hw_records'
 const PREF_KEY = 'hw_prefs'
 const CHECKIN_KEY = 'hw_checkins'
 const WEAK_KEY = 'hw_weak'
+const TRAJ_KEY = 'hw_trajectory'
 
 /* ---------- 偏好 ---------- */
 function getPrefs() {
@@ -163,6 +164,69 @@ function clearWeak() {
   wx.removeStorageSync(WEAK_KEY)
 }
 
+/* ---------- 练习轨迹 ---------- */
+function getTrajectory() {
+  return wx.getStorageSync(TRAJ_KEY) || []
+}
+
+function addTrajectory(item) {
+  return new Promise((resolve) => {
+    const list = getTrajectory()
+    const id = 't' + Date.now()
+    const fs = wx.getFileSystemManager()
+    const dest = `${wx.env.USER_DATA_PATH}/hw_traj_${id}.png`
+    fs.copyFile({
+      srcPath: item.path,
+      destPath: dest,
+      success: () => {
+        list.unshift({ id, char: item.char || '', time: Date.now(), path: dest })
+        // 最多保留 100 张，超出删除旧文件
+        while (list.length > 100) {
+          const rm = list.pop()
+          try {
+            fs.unlink({ filePath: rm.path })
+          } catch (e) {
+            /* 忽略 */
+          }
+        }
+        wx.setStorageSync(TRAJ_KEY, list)
+        resolve(list)
+      },
+      fail: () => resolve(list)
+    })
+  })
+}
+
+function removeTrajectory(id) {
+  const list = getTrajectory()
+  const idx = list.findIndex((it) => it.id === id)
+  if (idx > -1) {
+    const rm = list[idx]
+    const fs = wx.getFileSystemManager()
+    try {
+      fs.unlink({ filePath: rm.path })
+    } catch (e) {
+      /* 忽略 */
+    }
+    list.splice(idx, 1)
+    wx.setStorageSync(TRAJ_KEY, list)
+  }
+  return list
+}
+
+function clearTrajectory() {
+  const list = getTrajectory()
+  const fs = wx.getFileSystemManager()
+  list.forEach((it) => {
+    try {
+      fs.unlink({ filePath: it.path })
+    } catch (e) {
+      /* 忽略 */
+    }
+  })
+  wx.removeStorageSync(TRAJ_KEY)
+}
+
 /* ---------- 汇总 ---------- */
 function getStats() {
   const records = wx.getStorageSync(REC_KEY) || {}
@@ -195,5 +259,9 @@ module.exports = {
   addWeak,
   removeWeak,
   clearWeak,
+  getTrajectory,
+  addTrajectory,
+  removeTrajectory,
+  clearTrajectory,
   getStats
 }

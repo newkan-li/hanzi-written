@@ -294,6 +294,11 @@ Page({
     wx.navigateTo({ url: '/pages/poster/poster' })
   },
 
+  openScribe() {
+    getApp().globalData.scribeChar = this.data.char
+    wx.navigateTo({ url: '/pages/scribe/scribe' })
+  },
+
   go(e) {
     const delta = Number(e.currentTarget.dataset.delta)
     const total = this.data.total

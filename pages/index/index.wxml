@@ -37,6 +37,10 @@
       <view class="quick-name">练习海报</view>
       <view class="muted">生成图片去分享</view>
     </view>
+    <view class="quick-item card" bindtap="onScribe">
+      <view class="quick-name">自由书写</view>
+      <view class="muted">临摹练习轨迹</view>
+    </view>
   </view>
 
   <view class="section-title">字库分类</view>

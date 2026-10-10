@@ -46,6 +46,7 @@
 
   <view class="toolbar second">
     <view class="btn ghost" bindtap="speak">朗读</view>
+    <view class="btn ghost" bindtap="openScribe">书写</view>
     <view class="btn ghost" bindtap="makePoster">海报</view>
     <view class="btn ghost" bindtap="makeWorksheet">字帖</view>
   </view>

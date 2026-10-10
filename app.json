@@ -8,6 +8,8 @@
     "pages/weak/weak",
     "pages/worksheet/worksheet",
     "pages/poster/poster",
+    "pages/scribe/scribe",
+    "pages/traj/traj",
     "pages/profile/profile"
   ],
   "window": {
