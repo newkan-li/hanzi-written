@@ -194,7 +194,11 @@ Page({
       chars = cnChars(tpl.lines.join(''))
       poem = { title: tpl.name, dynasty: '', author: tpl.desc, lines: tpl.lines }
     } else {
-      chars = cnChars(customText)
+      const lines = (customText || '').split('\n').map((s) => s.trim())
+      chars = cnChars(lines.join(''))
+      if (lines.filter((l) => cnChars(l).length).length >= 2) {
+        poem = { title: '自定义', dynasty: '', author: '', lines }
+      }
     }
     chars = cnChars(chars.join(''))
     this.setData({ chars: Array.from(new Set(chars)), poem })
@@ -270,20 +274,22 @@ Page({
   },
 
   generatePoem() {
-    const lines = this.data.poem.lines.map(cnChars).filter((l) => l.length)
-    if (!lines.length) {
+    const raw = (this.data.poem.lines || []).slice()
+    const items = raw.map((l) => ({ chars: cnChars(l) }))
+    if (!items.filter((it) => it.chars.length).length) {
       wx.showToast({ title: '没有可生成的诗句', icon: 'none' })
       return
     }
     const { W, H } = this.pageSize()
-    const maxLen = Math.max.apply(null, lines.map((l) => l.length))
-    let cell = Math.round(Number(this.data.cellCm) * CM)
-    const maxCellW = Math.floor((W - 2 * SIDE) / maxLen)
     const blockRows = 1 + this.data.traceRows
-    const maxCellH = Math.floor((H - HEADER - FOOTER) / (lines.length * blockRows))
-    const maxCell = Math.min(maxCellW, maxCellH)
-    if (cell > maxCell) cell = maxCell
-    this.buildCanvas(W, H, (ctx) => this.drawPoemSheet(ctx, lines, cell, blockRows, W, H))
+    const gapUnits = 0.7
+    const maxLen = Math.max.apply(null, items.map((it) => it.chars.length))
+    const totalUnits = items.reduce((s, it) => s + (it.chars.length ? blockRows : gapUnits), 0)
+    let cell = Math.round(Number(this.data.cellCm) * CM)
+    const cellByW = Math.floor((W - 2 * SIDE) / Math.max(1, maxLen))
+    const cellByH = Math.floor((H - HEADER - FOOTER) / totalUnits)
+    cell = Math.min(cell, cellByW, cellByH)
+    this.buildCanvas(W, H, (ctx) => this.drawPoemSheet(ctx, items, cell, blockRows, gapUnits, W, H))
   },
 
   pxFont(px, serif) {
@@ -387,30 +393,36 @@ Page({
     this.drawFooter(ctx, W, H)
   },
 
-  drawPoemSheet(ctx, lines, cell, blockRows, W, H) {
+  drawPoemSheet(ctx, items, cell, blockRows, gapUnits, W, H) {
     const poem = this.data.poem
     const gridStyle = this.data.gridStyle
-    const cols = Math.max.apply(null, lines.map((l) => l.length))
+    const cols = Math.max.apply(null, items.map((it) => it.chars.length))
     const gridW = cols * cell
     const startBase = Math.round((W - gridW) / 2)
-    const blockH = blockRows * cell + LINE_GAP
-    const totalH = lines.length * blockH
-    const startY = HEADER + Math.max(0, Math.floor((H - HEADER - FOOTER - totalH) / 2))
+    const totalH = items.reduce(
+      (s, it) => s + (it.chars.length ? blockRows * cell + LINE_GAP : gapUnits * cell),
+      0
+    )
+    let y = HEADER + Math.max(0, Math.floor((H - HEADER - FOOTER - totalH) / 2))
     const sub = [poem.dynasty, poem.author].filter(Boolean).join(' · ')
     this.drawHeader(ctx, W, H, poem.title || '古诗字帖', sub)
 
-    lines.forEach((lineChars, i) => {
-      const y0 = startY + i * blockH
-      const startX = startBase + Math.round(((cols - lineChars.length) / 2) * cell)
+    items.forEach((it) => {
+      if (!it.chars.length) {
+        y += gapUnits * cell
+        return
+      }
+      const startX = startBase + Math.round(((cols - it.chars.length) / 2) * cell)
       for (let row = 0; row < blockRows; row += 1) {
-        const y = y0 + row * cell
+        const yy = y + row * cell
         const color = row === 0 ? '#2b2b2b' : '#cfc7b4'
-        for (let j = 0; j < lineChars.length; j += 1) {
+        for (let j = 0; j < it.chars.length; j += 1) {
           const x = startX + j * cell
-          this.drawGrid(ctx, x, y, cell, gridStyle)
-          this.drawChar(ctx, lineChars[j], x, y, cell, color)
+          this.drawGrid(ctx, x, yy, cell, gridStyle)
+          this.drawChar(ctx, it.chars[j], x, yy, cell, color)
         }
       }
+      y += blockRows * cell + LINE_GAP
     })
     this.drawFooter(ctx, W, H)
   },
