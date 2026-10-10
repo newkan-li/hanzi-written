@@ -41,6 +41,14 @@ function pickDailyLesson() {
   return buildLesson(ids[dayOfYear() % ids.length])
 }
 
+// 每日一字：优先取自「今日一课」的课文用字
+function charFromLesson(lesson) {
+  if (lesson && lesson.chars && lesson.chars.length) {
+    return lesson.chars[dayOfYear() % lesson.chars.length]
+  }
+  return pickDaily()
+}
+
 Page({
   data: {
     daily: '',
@@ -53,9 +61,10 @@ Page({
   },
 
   onLoad() {
+    const lesson = this.resolveLesson()
     this.setData({
-      daily: pickDaily(),
-      dailyLesson: this.resolveLesson(),
+      dailyLesson: lesson,
+      daily: charFromLesson(lesson),
       todayPoem: this.resolvePoem()
     })
   },
@@ -65,9 +74,11 @@ Page({
       .getRecords()
       .slice(0, 10)
       .map((it) => it.char)
+    const lesson = this.resolveLesson()
     this.setData({
       recent,
-      dailyLesson: this.resolveLesson(),
+      dailyLesson: lesson,
+      daily: charFromLesson(lesson),
       todayPoem: this.resolvePoem()
     })
   },
@@ -174,7 +185,7 @@ Page({
     const lesson = buildLesson(ids[idx])
     if (lesson) {
       storage.setPref('homeLesson', ids[idx])
-      this.setData({ dailyLesson: lesson })
+      this.setData({ dailyLesson: lesson, daily: charFromLesson(lesson) })
     }
   },
 
