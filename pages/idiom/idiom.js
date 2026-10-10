@@ -28,5 +28,13 @@ Page({
       desc: `${it.pinyin} · ${it.meaning}`
     }
     wx.navigateTo({ url: '/pages/practice/practice' })
+  },
+
+  onShareAppMessage() {
+    return { title: '墨学 · 成语练字（拼音与释义）', path: '/pages/idiom/idiom' }
+  },
+
+  onShareTimeline() {
+    return { title: '墨学 · 成语练字（拼音与释义）' }
   }
 })

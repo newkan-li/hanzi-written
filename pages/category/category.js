@@ -35,6 +35,7 @@ Page({
     const key = options.key
     const category = categories.find((c) => c.key === key) || categories[0]
     wx.setNavigationBarTitle({ title: category.name })
+    this.shareKey = category.key
 
     if (category.key === 'poem') {
       this.setData({ isPoem: true, name: category.name, desc: category.desc, poemTotal: poems.length })
@@ -149,5 +150,19 @@ Page({
       lines: src.lines
     }
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '墨学 · ' + (this.data.name || '汉字练习'),
+      path: '/pages/category/category?key=' + (this.shareKey || 'basic')
+    }
+  },
+
+  onShareTimeline() {
+    return {
+      title: '墨学 · ' + (this.data.name || '汉字练习'),
+      query: 'key=' + (this.shareKey || 'basic')
+    }
   }
 })

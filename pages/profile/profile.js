@@ -74,5 +74,13 @@ Page({
         this.refresh()
       }
     })
+  },
+
+  onShareAppMessage() {
+    return { title: '墨学 · 学写汉字，坚持每日打卡', path: '/pages/index/index' }
+  },
+
+  onShareTimeline() {
+    return { title: '墨学 · 学写汉字，坚持每日打卡' }
   }
 })

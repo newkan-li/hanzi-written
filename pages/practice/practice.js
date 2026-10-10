@@ -51,12 +51,13 @@ Page({
     info: { pinyin: '', radical: '—', structure: '—', strokes: '—', words: [], meaning: '—' }
   },
 
-  onLoad() {
+  onLoad(options) {
     const app = getApp()
-    const list =
-      app.globalData.practiceList && app.globalData.practiceList.length
-        ? app.globalData.practiceList
-        : ['永']
+    let list = app.globalData.practiceList
+    if (options && options.char) {
+      list = [decodeURIComponent(options.char)]
+    }
+    if (!list || !list.length) list = ['永']
     const index = Math.min(
       Math.max(app.globalData.practiceIndex || 0, 0),
       list.length - 1
@@ -370,6 +371,21 @@ Page({
       practiced: record.count
     })
     this.createWriter(char)
+  },
+
+  onShareAppMessage() {
+    const char = this.data.char || '永'
+    return {
+      title: '我在墨学练「' + char + '」字，一起来写吧',
+      path: '/pages/practice/practice?char=' + encodeURIComponent(char)
+    }
+  },
+
+  onShareTimeline() {
+    return {
+      title: '墨学 · 跟着笔顺练好每个汉字',
+      query: 'char=' + encodeURIComponent(this.data.char || '永')
+    }
   }
 })
 

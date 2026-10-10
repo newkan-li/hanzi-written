@@ -75,5 +75,21 @@ Page({
       lines: poem.lines
     }
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
+  },
+
+  onShareAppMessage() {
+    const poem = this.data.currentPoem
+    return {
+      title: poem ? '墨学 · 练诗《' + poem.title + '》' : '墨学 · 课本古诗练字',
+      path: poem ? '/pages/poem/poem?id=' + poem.id : '/pages/poem/poem'
+    }
+  },
+
+  onShareTimeline() {
+    const poem = this.data.currentPoem
+    return {
+      title: poem ? '墨学 · 练诗《' + poem.title + '》' : '墨学 · 课本古诗练字',
+      query: poem ? 'id=' + poem.id : ''
+    }
   }
 })

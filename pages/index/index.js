@@ -142,5 +142,13 @@ Page({
     getApp().globalData.practiceList = list
     getApp().globalData.practiceIndex = index || 0
     wx.navigateTo({ url: '/pages/practice/practice' })
+  },
+
+  onShareAppMessage() {
+    return { title: '墨学 · 学写汉字，跟着笔顺练字', path: '/pages/index/index' }
+  },
+
+  onShareTimeline() {
+    return { title: '墨学 · 学写汉字，跟着笔顺练字' }
   }
 })

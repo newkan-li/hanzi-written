@@ -46,5 +46,13 @@ Page({
 
   onOpenIdiom() {
     wx.navigateTo({ url: '/pages/idiom/idiom' })
+  },
+
+  onShareAppMessage() {
+    return { title: '墨学 · 教材同步练字字库', path: '/pages/library/library' }
+  },
+
+  onShareTimeline() {
+    return { title: '墨学 · 教材同步练字字库' }
   }
 })

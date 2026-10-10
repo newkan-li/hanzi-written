@@ -180,5 +180,20 @@ Page({
       ;(L.xiezi || []).forEach((c) => set.add(c))
     })
     return Array.from(set)
+  },
+
+  onShareAppMessage() {
+    const book = this.data.book
+    return {
+      title: book ? '墨学 · ' + book.name + ' 生字练习' : '墨学 · 教材同步练字',
+      path: '/pages/textbook/textbook' + (book ? '?book=' + book.id : '')
+    }
+  },
+
+  onShareTimeline() {
+    return {
+      title: this.data.book ? '墨学 · ' + this.data.book.name + ' 生字练习' : '墨学 · 教材同步练字',
+      query: this.data.currentBookId ? 'book=' + this.data.currentBookId : ''
+    }
   }
 })
