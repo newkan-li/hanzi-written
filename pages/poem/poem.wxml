@@ -1,0 +1,37 @@
+<view class="page">
+  <scroll-view scroll-x class="books" enable-flex>
+    <view
+      class="book {{currentBookId === item.id ? 'active' : ''}}"
+      wx:for="{{books}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="pickBook"
+    >{{item.short}}</view>
+  </scroll-view>
+
+  <view class="poems">
+    <view
+      class="poem card {{currentPoem.id === item.id ? 'active' : ''}}"
+      wx:for="{{list}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="pickPoem"
+    >
+      <view class="poem-title">{{item.title}}</view>
+      <view class="muted poem-meta">{{item.dynasty}} · {{item.author}}</view>
+      <view class="poem-first muted">{{item.lines[0]}}</view>
+    </view>
+  </view>
+
+  <view class="detail card" wx:if="{{currentPoem}}">
+    <view class="detail-title">{{currentPoem.title}}</view>
+    <view class="muted detail-meta">{{currentPoem.dynasty}} · {{currentPoem.author}}</view>
+    <view class="lines">
+      <view class="line" wx:for="{{currentPoem.lines}}" wx:key="*this">{{item}}</view>
+    </view>
+    <view class="actions">
+      <view class="btn" bindtap="practicePoem">练这首诗</view>
+      <view class="btn ghost" bindtap="worksheetPoem">生成字帖</view>
+    </view>
+  </view>
+</view>

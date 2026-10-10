@@ -130,8 +130,7 @@
 
 .grades {
   margin-top: 24rpx;
-}
-.grades-label {
+}.grades-label {
   font-size: 28rpx;
   font-weight: 600;
   margin-bottom: 16rpx;
@@ -165,5 +164,21 @@
   border: 1rpx solid #e7e0d0;
   background-color: #fdfbf5;
   font-size: 46rpx;
+  font-family: "Songti SC", serif;
+}
+
+.poemcard {
+  margin-top: 24rpx;
+}
+.poem-title {
+  font-size: 38rpx;
+  font-family: "Songti SC", serif;
+  margin: 12rpx 0 6rpx;
+}
+.poem-line {
+  margin-top: 16rpx;
+  font-size: 30rpx;
+  letter-spacing: 3rpx;
+  color: #2b2b2b;
   font-family: "Songti SC", serif;
 }

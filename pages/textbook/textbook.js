@@ -130,5 +130,24 @@ Page({
     app.globalData.dictationChars = chars
     app.globalData.dictationTitle = this.data.book.name
     wx.navigateTo({ url: '/pages/dictation/dictation' })
+  },
+
+  dictationUnit(e) {
+    const idx = Number(e.currentTarget.dataset.index)
+    const unit = this.data.units[idx]
+    if (!unit) return
+    const set = new Set()
+    unit.lessons.forEach((l) => {
+      const L = data.lessons[l.id]
+      if (!L) return
+      ;(L.shizi || []).forEach((c) => set.add(c))
+      ;(L.xiezi || []).forEach((c) => set.add(c))
+    })
+    const chars = Array.from(set)
+    if (!chars.length) return
+    const app = getApp()
+    app.globalData.dictationChars = chars
+    app.globalData.dictationTitle = unit.title
+    wx.navigateTo({ url: '/pages/dictation/dictation' })
   }
 })

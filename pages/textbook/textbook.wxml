@@ -21,7 +21,9 @@
 
   <view class="units">
     <view class="unit" wx:for="{{units}}" wx:for-item="u" wx:key="title">
-      <view class="unit-title">{{u.title}}<text class="unit-theme">{{u.theme}}</text></view>
+      <view class="unit-title">{{u.title}}<text class="unit-theme">{{u.theme}}</text>
+        <text class="unit-dict" data-index="{{index}}" catchtap="dictationUnit">听写本单元</text>
+      </view>
       <view class="lessons">
         <view
           class="lesson {{currentLesson.id === lid.id ? 'active' : ''}}"

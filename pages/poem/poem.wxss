@@ -1,0 +1,77 @@
+.books {
+  white-space: nowrap;
+  margin-bottom: 20rpx;
+}
+.book {
+  display: inline-block;
+  padding: 14rpx 30rpx;
+  margin-right: 16rpx;
+  border-radius: 32rpx;
+  border: 1rpx solid #d8cfb8;
+  background-color: #fdfbf5;
+  color: #8a8578;
+  font-size: 26rpx;
+}
+.book.active {
+  border-color: #b23a33;
+  background-color: #b23a33;
+  color: #fff;
+}
+
+.poems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24rpx;
+}
+.poem {
+  width: calc(50% - 12rpx);
+  box-sizing: border-box;
+  padding: 24rpx;
+}
+.poem.active {
+  border-color: #b23a33;
+}
+.poem-title {
+  font-size: 34rpx;
+  font-family: "Songti SC", serif;
+}
+.poem-meta {
+  margin: 8rpx 0;
+  font-size: 22rpx;
+}
+.poem-first {
+  font-size: 24rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detail {
+  margin-top: 28rpx;
+}
+.detail-title {
+  font-size: 40rpx;
+  font-family: "Songti SC", serif;
+}
+.detail-meta {
+  margin: 8rpx 0 20rpx;
+}
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+.line {
+  font-size: 34rpx;
+  line-height: 1.6;
+  letter-spacing: 4rpx;
+  font-family: "Songti SC", serif;
+}
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+.actions .btn {
+  flex: 1;
+}

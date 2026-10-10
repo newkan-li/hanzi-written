@@ -44,6 +44,13 @@
     </view>
   </view>
 
+  <view class="poemcard card" wx:if="{{todayPoem}}" data-id="{{todayPoem.id}}" bindtap="onOpenPoem">
+    <view class="tag">今日一诗</view>
+    <view class="poem-title">{{todayPoem.title}}</view>
+    <view class="muted">{{todayPoem.dynasty}} · {{todayPoem.author}}</view>
+    <view class="poem-line">{{todayPoem.lines[0]}}</view>
+  </view>
+
   <view class="grades">
     <view class="grades-label">教材同步</view>
     <scroll-view scroll-x class="grades-scroll" enable-flex>

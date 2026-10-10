@@ -21,5 +21,9 @@ Page({
 
   onOpenTextbook() {
     wx.navigateTo({ url: '/pages/textbook/textbook' })
+  },
+
+  onOpenPoem() {
+    wx.navigateTo({ url: '/pages/poem/poem' })
   }
 })

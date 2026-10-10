@@ -1,5 +1,6 @@
 const { categories, dailyPool } = require('../../data/commonChars')
 const textbook = require('../../data/textbook')
+const poems = require('../../data/poems')
 const storage = require('../../utils/storage')
 
 function dayOfYear() {
@@ -44,6 +45,7 @@ Page({
     query: '',
     categories,
     dailyLesson: null,
+    todayPoem: null,
     books: textbook.books.map((b) => ({ id: b.id, short: b.short, name: b.name })),
     recent: []
   },
@@ -51,7 +53,8 @@ Page({
   onLoad() {
     this.setData({
       daily: pickDaily(),
-      dailyLesson: pickDailyLesson()
+      dailyLesson: pickDailyLesson(),
+      todayPoem: poems[dayOfYear() % poems.length]
     })
   },
 
@@ -119,6 +122,11 @@ Page({
 
   onIdiom() {
     wx.navigateTo({ url: '/pages/idiom/idiom' })
+  },
+
+  onOpenPoem(e) {
+    const id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: '/pages/poem/poem' + (id ? '?id=' + id : '') })
   },
 
   onScribe() {
