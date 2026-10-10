@@ -2,6 +2,8 @@ const createHanziWriterContext = require('../../vendor/hanzi-writer/index')
 
 const { loadCharData } = require('../../utils/charData')
 const storage = require('../../utils/storage')
+const config = require('../../utils/config')
+const { charInfo } = require('../../data/charInfo')
 
 const MODES = [
   { key: 'animate', name: '演示' },
@@ -9,20 +11,30 @@ const MODES = [
   { key: 'quiz', name: '测验' }
 ]
 
+const GRIDS = [
+  { key: 'tian', name: '田' },
+  { key: 'mi', name: '米' },
+  { key: 'huigong', name: '回' },
+  { key: 'hline', name: '横' },
+  { key: 'none', name: '无' }
+]
+
 Page({
   data: {
     modes: MODES,
     mode: 'animate',
+    gridStyles: GRIDS,
+    gridStyle: 'tian',
     chars: [],
     index: 0,
     char: '',
     total: 0,
     size: 300,
-    showGrid: true,
     loading: true,
     error: '',
     isFav: false,
-    practiced: 0
+    practiced: 0,
+    info: null
   },
 
   onLoad() {
@@ -39,6 +51,7 @@ Page({
     const size = Math.floor((info.windowWidth || 375) * 0.8)
     const char = list[index]
     const record = storage.addRecord(char)
+    storage.checkin()
 
     this.setData({
       chars: list,
@@ -46,9 +59,19 @@ Page({
       index,
       char,
       size,
+      gridStyle: storage.getPref('gridStyle', 'tian'),
       isFav: storage.isFavorite(char),
       practiced: record.count
     })
+  },
+
+  onShow() {
+    if (this.data.char) {
+      this.setData({
+        isFav: storage.isFavorite(this.data.char),
+        practiced: storage.getRecord(this.data.char).count
+      })
+    }
   },
 
   onReady() {
@@ -57,6 +80,10 @@ Page({
 
   onUnload() {
     this.destroyWriter()
+    if (this._audio) {
+      this._audio.destroy()
+      this._audio = null
+    }
   },
 
   waitForCanvas() {
@@ -89,11 +116,25 @@ Page({
     })
   },
 
+  updateInfo(char, data) {
+    const dict = charInfo[char] || {}
+    this.setData({
+      info: {
+        pinyin: dict.pinyin || '—',
+        radical: dict.radical || '—',
+        structure: dict.structure || '—',
+        strokes: data && data.strokes ? data.strokes.length : '—',
+        wordsText: dict.words ? dict.words.join(' / ') : '—',
+        meaning: dict.meaning || '—'
+      }
+    })
+  },
+
   createWriter(charArg) {
     this.destroyWriter()
     const { mode } = this.data
     const char = charArg || this.data.char
-    this.setData({ loading: true, error: '' })
+    this.setData({ loading: true, error: '', info: null })
 
     try {
       this.writerCtx = createHanziWriterContext({
@@ -111,7 +152,10 @@ Page({
         delayBetweenStrokes: 250,
         charDataLoader: (c, onLoad, onError) => {
           Promise.all([loadCharData(c), this.waitForCanvas()])
-            .then((res) => onLoad(res[0]))
+            .then((res) => {
+              this.updateInfo(c, res[0])
+              onLoad(res[0])
+            })
             .catch(onError)
         },
         onLoadCharDataSuccess: () => {
@@ -176,18 +220,49 @@ Page({
     this.runMode(mode)
   },
 
-  replay() {
-    this.runMode(this.data.mode)
+  onSelectGrid(e) {
+    const gridStyle = e.currentTarget.dataset.key
+    this.setData({ gridStyle })
+    storage.setPref('gridStyle', gridStyle)
   },
 
-  toggleGrid() {
-    this.setData({ showGrid: !this.data.showGrid })
+  replay() {
+    this.runMode(this.data.mode)
   },
 
   toggleFav() {
     const isFav = storage.toggleFavorite(this.data.char)
     this.setData({ isFav })
     wx.showToast({ title: isFav ? '已收藏' : '已取消', icon: 'none' })
+  },
+
+  speak() {
+    const char = this.data.char
+    if (this._audio) {
+      this._audio.destroy()
+      this._audio = null
+    }
+    if (!config.tts || !config.tts.url) {
+      wx.showToast({ title: '未配置朗读音源', icon: 'none' })
+      return
+    }
+    const audio = wx.createInnerAudioContext()
+    audio.src = config.tts.url(char)
+    audio.onError(() => {
+      wx.showToast({ title: '朗读失败，请在 config.js 配置音源', icon: 'none' })
+    })
+    audio.play()
+    this._audio = audio
+  },
+
+  makeWorksheet() {
+    getApp().globalData.worksheetList = this.data.chars
+    wx.navigateTo({ url: '/pages/worksheet/worksheet' })
+  },
+
+  makePoster() {
+    getApp().globalData.posterChar = this.data.char
+    wx.navigateTo({ url: '/pages/poster/poster' })
   },
 
   go(e) {
@@ -200,6 +275,7 @@ Page({
     const next = (this.data.index + delta + total) % total
     const char = this.data.chars[next]
     const record = storage.addRecord(char)
+    releaseAudio(this)
     this.setData({
       index: next,
       char,
@@ -209,3 +285,10 @@ Page({
     this.createWriter(char)
   }
 })
+
+function releaseAudio(page) {
+  if (page._audio) {
+    page._audio.destroy()
+    page._audio = null
+  }
+}

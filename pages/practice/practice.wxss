@@ -36,16 +36,70 @@
   margin: 0 auto;
   padding: 12rpx;
 }
-/* 田字格背景（用背景绘制，保证在画布之下） */
-.stage.with-grid {
+
+/* 田字格：中心十字 + 辅助虚线 */
+.grid-tian {
   background-image:
     linear-gradient(rgba(178, 58, 51, 0.22), rgba(178, 58, 51, 0.22)),
     linear-gradient(rgba(178, 58, 51, 0.22), rgba(178, 58, 51, 0.22)),
-    linear-gradient(to right, rgba(178, 58, 51, 0.16) 1rpx, transparent 1rpx),
-    linear-gradient(to bottom, rgba(178, 58, 51, 0.16) 1rpx, transparent 1rpx);
+    linear-gradient(to right, rgba(178, 58, 51, 0.14) 1rpx, transparent 1rpx),
+    linear-gradient(to bottom, rgba(178, 58, 51, 0.14) 1rpx, transparent 1rpx);
   background-size: 100% 1rpx, 1rpx 100%, 50% 50%, 50% 50%;
   background-position: center center;
   background-repeat: no-repeat, no-repeat, repeat, repeat;
+}
+
+/* 米字格：十字 + 两条对角线 + 辅助虚线 */
+.grid-mi {
+  background-image:
+    linear-gradient(rgba(178, 58, 51, 0.22), rgba(178, 58, 51, 0.22)),
+    linear-gradient(rgba(178, 58, 51, 0.22), rgba(178, 58, 51, 0.22)),
+    linear-gradient(45deg, transparent calc(50% - 1rpx), rgba(178, 58, 51, 0.16) calc(50% - 1rpx), rgba(178, 58, 51, 0.16) calc(50% + 1rpx), transparent calc(50% + 1rpx)),
+    linear-gradient(-45deg, transparent calc(50% - 1rpx), rgba(178, 58, 51, 0.16) calc(50% - 1rpx), rgba(178, 58, 51, 0.16) calc(50% + 1rpx), transparent calc(50% + 1rpx)),
+    linear-gradient(to right, rgba(178, 58, 51, 0.14) 1rpx, transparent 1rpx),
+    linear-gradient(to bottom, rgba(178, 58, 51, 0.14) 1rpx, transparent 1rpx);
+  background-size: 100% 1rpx, 1rpx 100%, 100% 100%, 100% 100%, 50% 50%, 50% 50%;
+  background-position: center center;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat;
+}
+
+/* 回宫格：外框 + 内方框（内框用 ::before，位于画布之下） */
+.grid-huigong {
+  background-image:
+    linear-gradient(to right, rgba(178, 58, 51, 0.14) 1rpx, transparent 1rpx),
+    linear-gradient(to bottom, rgba(178, 58, 51, 0.14) 1rpx, transparent 1rpx);
+  background-size: 50% 50%, 50% 50%;
+  background-position: center center;
+  background-repeat: repeat, repeat;
+}
+.grid-huigong::before {
+  content: "";
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  top: 25%;
+  bottom: 25%;
+  border: 1rpx solid rgba(178, 58, 51, 0.22);
+}
+
+/* 横线格 */
+.grid-hline {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(178, 58, 51, 0.18) 0,
+    rgba(178, 58, 51, 0.18) 1rpx,
+    transparent 1rpx,
+    transparent 96rpx
+  );
+}
+.grid-hline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1rpx;
+  background-color: rgba(178, 58, 51, 0.22);
 }
 
 .loading,
@@ -78,19 +132,94 @@
   color: #fff;
 }
 
+.grids {
+  display: flex;
+  align-items: center;
+  margin-top: 24rpx;
+}
+.grid-label {
+  color: #8a8578;
+  font-size: 24rpx;
+  margin-right: 16rpx;
+}
+.grid-chip {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #d8cfb8;
+  color: #8a8578;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+}
+.grid-chip.active {
+  border-color: #b23a33;
+  color: #fff;
+  background-color: #b23a33;
+}
+
 .toolbar {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20rpx;
-  margin-top: 36rpx;
+  margin-top: 32rpx;
+}
+.toolbar.second .btn {
+  flex: 1;
+}
+
+.info {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 32rpx;
+}
+.info-title {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 16rpx;
+}
+.info-char {
+  font-size: 56rpx;
+  font-family: "Songti SC", serif;
+  margin-right: 16rpx;
+}
+.info-pinyin {
+  color: #b23a33;
+  font-size: 30rpx;
+}
+.info-grid {
+  display: flex;
+  border-top: 1rpx solid #efe9da;
+  border-bottom: 1rpx solid #efe9da;
+  padding: 16rpx 0;
+  margin-bottom: 12rpx;
+}
+.info-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 26rpx;
+}
+.info-line {
+  display: flex;
+  padding: 8rpx 0;
+  font-size: 26rpx;
+}
+.k {
+  color: #8a8578;
+  margin-right: 16rpx;
+  flex-shrink: 0;
 }
 
 .footer {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 36rpx;
+  justify-content: center;
+  margin-top: 28rpx;
 }

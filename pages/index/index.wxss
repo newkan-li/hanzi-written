@@ -50,8 +50,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 24rpx;
-}
-.grid-item {
+}.grid-item {
   width: calc(50% - 12rpx);
   box-sizing: border-box;
 }
@@ -69,4 +68,20 @@
   margin-top: 22rpx;
   color: #b23a33;
   font-size: 22rpx;
+}
+
+.quick {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 24rpx;
+}
+.quick-item {
+  flex: 1;
+  padding: 28rpx;
+}
+.quick-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  margin-bottom: 10rpx;
 }

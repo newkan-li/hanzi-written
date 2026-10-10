@@ -1,0 +1,13 @@
+<view class="page poster">
+  <canvas
+    type="2d"
+    id="poster-canvas"
+    class="poster-canvas"
+    style="width: {{canvasW}}px; height: {{canvasH}}px;"
+  ></canvas>
+
+  <view class="poster-actions" wx:if="{{generated}}">
+    <view class="btn ghost" bindtap="saveToAlbum">保存到相册</view>
+    <view class="btn ghost" bindtap="shareImage">分享图片</view>
+  </view>
+</view>

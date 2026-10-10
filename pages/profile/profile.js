@@ -2,7 +2,8 @@ const storage = require('../../utils/storage')
 
 Page({
   data: {
-    stats: { charCount: 0, totalCount: 0, favCount: 0 },
+    stats: { charCount: 0, totalCount: 0, favCount: 0, days: 0, streak: 0 },
+    checkin: { streak: 0, totalDays: 0, todayDone: false, recent: [] },
     favorites: [],
     records: []
   },
@@ -14,6 +15,7 @@ Page({
   refresh() {
     this.setData({
       stats: storage.getStats(),
+      checkin: storage.getCheckinStats(),
       favorites: storage.getFavorites(),
       records: storage.getRecords().slice(0, 50)
     })
@@ -24,6 +26,18 @@ Page({
     getApp().globalData.practiceList = [char]
     getApp().globalData.practiceIndex = 0
     wx.navigateTo({ url: '/pages/practice/practice' })
+  },
+
+  onMakePoster() {
+    const records = storage.getRecords()
+    const char = (this.data.favorites[0] || (records[0] && records[0].char) || '永')
+    getApp().globalData.posterChar = char
+    wx.navigateTo({ url: '/pages/poster/poster' })
+  },
+
+  onMakeWorksheet() {
+    getApp().globalData.worksheetList = storage.getFavorites()
+    wx.navigateTo({ url: '/pages/worksheet/worksheet' })
   },
 
   onClearRecords() {

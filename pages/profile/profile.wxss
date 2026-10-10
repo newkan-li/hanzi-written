@@ -1,7 +1,43 @@
+.checkin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32rpx;
+}
+.streak-num {
+  font-size: 72rpx;
+  font-weight: 700;
+  color: #b23a33;
+  line-height: 1.1;
+  text-align: center;
+}
+.week {
+  display: flex;
+  gap: 16rpx;
+  margin: 24rpx 0 12rpx;
+}
+.day {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 1rpx solid #d8cfb8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.day.done {
+  background-color: #b23a33;
+  border-color: #b23a33;
+}
+.total {
+  margin-top: 6rpx;
+}
+
 .stats {
   display: flex;
   justify-content: space-around;
   text-align: center;
+  margin-top: 24rpx;
 }
 .stat {
   flex: 1;
@@ -10,6 +46,15 @@
   font-size: 52rpx;
   font-weight: 700;
   color: #b23a33;
+}
+
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+.actions .btn {
+  flex: 1;
 }
 
 .chips {

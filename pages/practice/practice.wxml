@@ -6,7 +6,7 @@
     </view>
   </view>
 
-  <view class="stage card {{showGrid ? 'with-grid' : ''}}">
+  <view class="stage card {{gridStyle === 'none' ? '' : 'with-grid grid-' + gridStyle}}">
     <hanzi-writer-view id="hz-writer" width="{{size}}" height="{{size}}" />
     <view class="loading" wx:if="{{loading}}">字库加载中…</view>
     <view class="error" wx:if="{{error}}">{{error}}</view>
@@ -22,14 +22,44 @@
     >{{item.name}}</view>
   </view>
 
+  <view class="grids">
+    <view class="grid-label">格子</view>
+    <view
+      class="grid-chip {{gridStyle === item.key ? 'active' : ''}}"
+      wx:for="{{gridStyles}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onSelectGrid"
+    >{{item.name}}</view>
+  </view>
+
   <view class="toolbar">
     <view class="btn ghost" data-delta="-1" bindtap="go">上一个</view>
     <view class="btn" bindtap="replay">再写一遍</view>
     <view class="btn ghost" data-delta="1" bindtap="go">下一个</view>
   </view>
 
+  <view class="toolbar second">
+    <view class="btn ghost" bindtap="speak">朗读</view>
+    <view class="btn ghost" bindtap="makePoster">海报</view>
+    <view class="btn ghost" bindtap="makeWorksheet">字帖</view>
+  </view>
+
+  <view class="info card">
+    <view class="info-title">
+      <text class="info-char">{{char}}</text>
+      <text class="info-pinyin">{{info ? info.pinyin : ''}}</text>
+    </view>
+    <view class="info-grid">
+      <view class="info-item"><text class="k">部首</text><text>{{info ? info.radical : '—'}}</text></view>
+      <view class="info-item"><text class="k">笔画</text><text>{{info ? info.strokes : '—'}}</text></view>
+      <view class="info-item"><text class="k">结构</text><text>{{info ? info.structure : '—'}}</text></view>
+    </view>
+    <view class="info-line"><text class="k">组词</text><text>{{info ? info.wordsText : '—'}}</text></view>
+    <view class="info-line"><text class="k">释义</text><text>{{info ? info.meaning : '—'}}</text></view>
+  </view>
+
   <view class="footer">
-    <view class="muted" bindtap="toggleGrid">{{showGrid ? '隐藏' : '显示'}}田字格</view>
     <view class="muted">已练 {{practiced}} 次</view>
   </view>
 </view>

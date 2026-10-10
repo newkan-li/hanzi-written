@@ -24,6 +24,17 @@
     <view class="daily-char">{{daily}}</view>
   </view>
 
+  <view class="quick">
+    <view class="quick-item card" bindtap="onWorksheet">
+      <view class="quick-name">生成字帖</view>
+      <view class="muted">选字排版，导出打印</view>
+    </view>
+    <view class="quick-item card" bindtap="onPoster">
+      <view class="quick-name">练习海报</view>
+      <view class="muted">生成图片去分享</view>
+    </view>
+  </view>
+
   <view class="section-title">字库分类</view>
   <view class="grid">
     <view

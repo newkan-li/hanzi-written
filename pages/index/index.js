@@ -41,6 +41,16 @@ Page({
     wx.navigateTo({ url: `/pages/category/category?key=${key}` })
   },
 
+  onWorksheet() {
+    getApp().globalData.worksheetList = categories[0].chars
+    wx.navigateTo({ url: '/pages/worksheet/worksheet' })
+  },
+
+  onPoster() {
+    getApp().globalData.posterChar = this.data.daily
+    wx.navigateTo({ url: '/pages/poster/poster' })
+  },
+
   onTapChar(e) {
     const { char, chars } = e.currentTarget.dataset
     this.openPractice(chars || [char], (chars || [char]).indexOf(char))

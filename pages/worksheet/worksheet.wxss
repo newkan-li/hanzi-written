@@ -1,0 +1,93 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.chip {
+  padding: 14rpx 32rpx;
+  border-radius: 32rpx;
+  border: 1rpx solid #d8cfb8;
+  color: #8a8578;
+  font-size: 26rpx;
+  background-color: #fdfbf5;
+}
+.chip.active {
+  border-color: #b23a33;
+  background-color: #b23a33;
+  color: #fff;
+}
+.chip.sm {
+  padding: 10rpx 30rpx;
+}
+
+.tpl-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+.tpl {
+  width: calc(50% - 10rpx);
+  box-sizing: border-box;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid #e7e0d0;
+  background-color: #fdfbf5;
+}
+.tpl.active {
+  border-color: #b23a33;
+}
+.tpl-name {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+.tpl-desc {
+  margin-top: 8rpx;
+  color: #8a8578;
+  font-size: 22rpx;
+}
+
+.custom-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 160rpx;
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background-color: #fdfbf5;
+  border: 1rpx solid #e7e0d0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
+
+.opt-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.opt-label {
+  color: #8a8578;
+  font-size: 26rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.count {
+  margin: 24rpx 0;
+}
+
+.worksheet-canvas {
+  margin: 24rpx auto 0;
+  background-color: #fdfbf5;
+  border: 1rpx solid #e7e0d0;
+  border-radius: 8rpx;
+  display: block;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+.preview-actions .btn {
+  flex: 1;
+}

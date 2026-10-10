@@ -1,0 +1,87 @@
+<view class="page">
+  <view class="section-title">字帖来源</view>
+  <view class="chips">
+    <view
+      class="chip {{source === item.key ? 'active' : ''}}"
+      wx:for="{{sources}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="pickSource"
+    >{{item.name}}</view>
+  </view>
+
+  <view wx:if="{{source === 'template'}}" class="tpl-list">
+    <view
+      class="tpl {{templateIndex === index ? 'active' : ''}}"
+      wx:for="{{templates}}"
+      wx:key="key"
+      data-index="{{index}}"
+      bindtap="pickTemplate"
+    >
+      <view class="tpl-name">{{item.name}}</view>
+      <view class="tpl-desc">{{item.desc}}</view>
+    </view>
+  </view>
+
+  <textarea
+    wx:if="{{source === 'custom'}}"
+    class="custom-input"
+    placeholder="输入要练习的汉字，如：永和静学"
+    value="{{customText}}"
+    bindinput="onCustom"
+    maxlength="300"
+  />
+
+  <view class="section-title">格子样式</view>
+  <view class="chips">
+    <view
+      class="chip {{gridStyle === item.key ? 'active' : ''}}"
+      wx:for="{{grids}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="pickGrid"
+    >{{item.name}}</view>
+  </view>
+
+  <view class="section-title">排版</view>
+  <view class="opt-row">
+    <text class="opt-label">列数</text>
+    <view class="chips">
+      <view
+        class="chip sm {{cols === item ? 'active' : ''}}"
+        wx:for="{{colsOptions}}"
+        wx:key="*this"
+        data-value="{{item}}"
+        bindtap="pickCols"
+      >{{item}}</view>
+    </view>
+  </view>
+  <view class="opt-row">
+    <text class="opt-label">行数</text>
+    <view class="chips">
+      <view
+        class="chip sm {{rows === item ? 'active' : ''}}"
+        wx:for="{{rowsOptions}}"
+        wx:key="*this"
+        data-value="{{item}}"
+        bindtap="pickRows"
+      >{{item}}</view>
+    </view>
+  </view>
+
+  <view class="muted count">共 {{chars.length}} 个不重复汉字</view>
+
+  <view class="btn block" bindtap="generate">生成字帖</view>
+
+  <canvas
+    type="2d"
+    id="worksheet-canvas"
+    class="worksheet-canvas"
+    style="width: {{canvasW}}px; height: {{canvasH}}px;"
+  ></canvas>
+
+  <view class="preview-actions" wx:if="{{generated}}">
+    <view class="btn ghost" bindtap="saveToAlbum">保存到相册</view>
+    <view class="btn ghost" bindtap="shareImage">分享图片</view>
+  </view>
+</view>
