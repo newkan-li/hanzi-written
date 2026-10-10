@@ -1,0 +1,22 @@
+<view class="page">
+  <view class="head">
+    <view class="head-name">字库分类</view>
+    <view class="muted">选择一个分类开始练字</view>
+  </view>
+
+  <view class="grid">
+    <view
+      class="grid-item card"
+      wx:for="{{categories}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onOpenCategory"
+    >
+      <view class="grid-name">{{item.name}}</view>
+      <view class="grid-desc">{{item.desc}}</view>
+      <view class="grid-count">{{item.chars.length}} 字</view>
+    </view>
+  </view>
+
+  <view class="btn block" bindtap="onOpenWorksheet">用「入门基础」生成字帖</view>
+</view>

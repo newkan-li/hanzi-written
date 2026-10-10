@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/library/library",
     "pages/category/category",
     "pages/practice/practice",
     "pages/worksheet/worksheet",
@@ -21,7 +22,7 @@
     "borderStyle": "white",
     "list": [
       { "pagePath": "pages/index/index", "text": "首页" },
-      { "pagePath": "pages/category/category", "text": "字库" },
+      { "pagePath": "pages/library/library", "text": "字库" },
       { "pagePath": "pages/profile/profile", "text": "我的" }
     ]
   },
