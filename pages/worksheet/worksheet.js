@@ -121,12 +121,13 @@ Page({
     if (picked && picked.length) {
       app.globalData.worksheetPick = null
       this.currentList = picked.slice()
-      this.setData({ source: 'current' }, () => this.resolveChars())
+      // 选字结果同步写入「自选汉字」输入框，便于继续编辑
+      this.setData({ source: 'custom', customText: picked.join('') }, () => this.resolveChars())
     }
   },
 
   openPicker() {
-    getApp().globalData.worksheetPick = (this.currentList || this.data.chars || []).slice()
+    getApp().globalData.worksheetPick = (this.data.chars || []).slice()
     wx.navigateTo({ url: '/pages/pickchar/pickchar' })
   },
 
