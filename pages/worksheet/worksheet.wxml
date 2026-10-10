@@ -56,34 +56,20 @@
 
   <view class="poem-tip muted" wx:if="{{poem}}">{{poem.title}}<text wx:if="{{poem.dynasty}}"> · {{poem.dynasty}} {{poem.author}}</text></view>
 
-  <block wx:if="{{layout === 'grid'}}">
-    <view class="opt-row">
-      <text class="opt-label">列数</text>
-      <view class="chips">
-        <view
-          class="chip sm {{cols === item ? 'active' : ''}}"
-          wx:for="{{colsOptions}}"
-          wx:key="*this"
-          data-value="{{item}}"
-          bindtap="pickCols"
-        >{{item}}</view>
-      </view>
+  <view class="opt-row">
+    <text class="opt-label">格子大小</text>
+    <view class="chips">
+      <view
+        class="chip sm {{cellCm === item.key ? 'active' : ''}}"
+        wx:for="{{cellOptions}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="pickCell"
+      >{{item.name}}</view>
     </view>
-    <view class="opt-row">
-      <text class="opt-label">行数</text>
-      <view class="chips">
-        <view
-          class="chip sm {{rows === item ? 'active' : ''}}"
-          wx:for="{{rowsOptions}}"
-          wx:key="*this"
-          data-value="{{item}}"
-          bindtap="pickRows"
-        >{{item}}</view>
-      </view>
-    </view>
-  </block>
+  </view>
 
-  <view class="opt-row" wx:else>
+  <view class="opt-row" wx:if="{{layout === 'poem'}}">
     <text class="opt-label">描红行</text>
     <view class="chips">
       <view
@@ -96,7 +82,7 @@
     </view>
   </view>
 
-  <view class="muted count">共 {{chars.length}} 个不重复汉字</view>
+  <view class="muted count">A4（300dpi）· 共 {{chars.length}} 个不重复汉字 · 打印选「实际大小」</view>
 
   <view class="btn block" bindtap="generate">生成字帖</view>
 

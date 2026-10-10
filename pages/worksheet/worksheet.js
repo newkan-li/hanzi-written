@@ -21,18 +21,24 @@ const LAYOUTS = [
   { key: 'poem', name: '诗句排版' }
 ]
 
-const COLS_OPTIONS = [4, 6, 8]
-const ROWS_OPTIONS = [4, 6, 8, 10]
+// 打印尺寸（A4 300dpi，按真实厘米排版）
+const CM = 300 / 2.54 // 118.11 px/cm
+const PAGE_W = Math.round(21.0 * CM) // 2480
+const PAGE_H = Math.round(29.7 * CM) // 3508
+const SIDE = Math.round(1.0 * CM)
+const HEADER = Math.round(2.6 * CM)
+const FOOTER = Math.round(1.8 * CM)
+const LINE_GAP = Math.round(0.3 * CM)
+
+const CELL_OPTIONS = [
+  { key: '1.2', name: '小 1.2cm' },
+  { key: '1.5', name: '中 1.5cm' },
+  { key: '2.0', name: '大 2.0cm' }
+]
 const TRACE_OPTIONS = [0, 1, 2]
 
-const CANVAS_W = 690
-const MARGIN = 30
-const HEADER = 96
-const FOOTER = 56
-const LINE_GAP = 12
-
 function cnChars(str) {
-  return str.split('').filter((c) => /[\u4e00-\u9fa5]/.test(c))
+  return (str || '').split('').filter((c) => /[\u4e00-\u9fa5]/.test(c))
 }
 
 Page({
@@ -47,12 +53,10 @@ Page({
     layouts: LAYOUTS,
     layout: 'grid',
     poem: null,
+    cellOptions: CELL_OPTIONS,
+    cellCm: '1.5',
     traceOptions: TRACE_OPTIONS,
     traceRows: 1,
-    colsOptions: COLS_OPTIONS,
-    rowsOptions: ROWS_OPTIONS,
-    cols: 8,
-    rows: 6,
     chars: [],
     preview: '',
     generated: false,
@@ -95,6 +99,10 @@ Page({
     this.setData({ layout: e.currentTarget.dataset.key })
   },
 
+  pickCell(e) {
+    this.setData({ cellCm: e.currentTarget.dataset.key })
+  },
+
   pickTrace(e) {
     this.setData({ traceRows: Number(e.currentTarget.dataset.value) })
   },
@@ -105,14 +113,6 @@ Page({
 
   onCustom(e) {
     this.setData({ customText: e.detail.value })
-  },
-
-  pickCols(e) {
-    this.setData({ cols: Number(e.currentTarget.dataset.value) })
-  },
-
-  pickRows(e) {
-    this.setData({ rows: Number(e.currentTarget.dataset.value) })
   },
 
   resolveChars() {
@@ -129,7 +129,7 @@ Page({
       chars = cnChars(tpl.lines.join(''))
       poem = { title: tpl.name, dynasty: '', author: tpl.desc, lines: tpl.lines }
     } else {
-      chars = cnChars(customText || '')
+      chars = cnChars(customText)
     }
     chars = cnChars(chars.join(''))
     this.setData({ chars: Array.from(new Set(chars)), poem })
@@ -144,102 +144,126 @@ Page({
     }
   },
 
-  buildCanvas(H, drawFn) {
+  buildCanvas(drawFn) {
     const win = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
     const maxW = (win.windowWidth || 375) - 40
-    const scale = Math.min(1, maxW / CANVAS_W)
-    const displayW = Math.floor(CANVAS_W * scale)
-    const displayH = Math.floor(H * scale)
-    this.setData({ canvasW: displayW, canvasH: displayH }, () => {
-      wx.createSelectorQuery()
-        .select('#worksheet-canvas')
-        .fields({ node: true, size: true })
-        .exec((res) => {
-          const info = res && res[0]
-          if (!info || !info.node) {
-            wx.showToast({ title: '画布初始化失败', icon: 'none' })
-            return
-          }
-          const node = info.node
-          const dpr = win.pixelRatio || 2
-          node.width = CANVAS_W * dpr
-          node.height = H * dpr
-          const ctx = node.getContext('2d')
-          ctx.scale(dpr, dpr)
-          drawFn(ctx)
-          this.canvasNode = node
-          this.exportPreview()
-        })
-    })
+    const scale = Math.min(1, maxW / PAGE_W)
+    this.setData(
+      { canvasW: Math.floor(PAGE_W * scale), canvasH: Math.floor(PAGE_H * scale) },
+      () => {
+        wx.createSelectorQuery()
+          .select('#worksheet-canvas')
+          .fields({ node: true, size: true })
+          .exec((res) => {
+            const info = res && res[0]
+            if (!info || !info.node) {
+              wx.showToast({ title: '画布初始化失败', icon: 'none' })
+              return
+            }
+            const node = info.node
+            node.width = PAGE_W
+            node.height = PAGE_H
+            const ctx = node.getContext('2d')
+            drawFn(ctx)
+            this.canvasNode = node
+            this.exportPreview()
+          })
+      }
+    )
   },
 
   generateGrid() {
-    const { chars, cols, rows, gridStyle } = this.data
+    const { chars } = this.data
     if (!chars.length) {
       wx.showToast({ title: '没有可生成的字', icon: 'none' })
       return
     }
-    const cell = (CANVAS_W - MARGIN * 2) / cols
-    const H = HEADER + cell * rows + FOOTER
-    this.buildCanvas(H, (ctx) => this.drawGridSheet(ctx, chars, cols, rows, cell, gridStyle, H))
+    const cell = Math.round(Number(this.data.cellCm) * CM)
+    const cols = Math.max(1, Math.floor((PAGE_W - 2 * SIDE) / cell))
+    const rows = Math.max(1, Math.floor((PAGE_H - HEADER - FOOTER) / cell))
+    const startX = Math.round((PAGE_W - cols * cell) / 2)
+    this.buildCanvas((ctx) => this.drawGridSheet(ctx, chars, cols, rows, cell, startX))
   },
 
   generatePoem() {
-    const lines = this.data.poem.lines.map((l) => cnChars(l))
-    const maxLen = Math.max.apply(null, lines.map((l) => l.length).concat([1]))
-    const cols = Math.max(maxLen, 5)
-    const cell = (CANVAS_W - MARGIN * 2) / cols
+    const lines = this.data.poem.lines.map(cnChars).filter((l) => l.length)
+    if (!lines.length) {
+      wx.showToast({ title: '没有可生成的诗句', icon: 'none' })
+      return
+    }
+    const maxLen = Math.max.apply(null, lines.map((l) => l.length))
+    let cell = Math.round(Number(this.data.cellCm) * CM)
+    const maxCell = Math.floor((PAGE_W - 2 * SIDE) / maxLen)
+    if (cell > maxCell) cell = maxCell
     const blockRows = 1 + this.data.traceRows
-    const gridH = lines.length * blockRows * cell + (lines.length - 1) * LINE_GAP
-    const H = HEADER + gridH + FOOTER
-    this.buildCanvas(H, (ctx) =>
-      this.drawPoemSheet(ctx, lines, cols, cell, blockRows, this.data.gridStyle, H)
-    )
+    this.buildCanvas((ctx) => this.drawPoemSheet(ctx, lines, cell, blockRows))
+  },
+
+  pxFont(px, serif) {
+    return px + 'px ' + (serif ? '"Songti SC", serif' : 'sans-serif')
   },
 
   drawHeader(ctx, title, subtitle) {
     ctx.fillStyle = '#fdfbf5'
-    ctx.fillRect(0, 0, CANVAS_W, 10000)
+    ctx.fillRect(0, 0, PAGE_W, PAGE_H)
     ctx.fillStyle = '#2b2b2b'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.font = '30px "Songti SC", serif'
-    ctx.fillText(title, CANVAS_W / 2, 44)
-    ctx.fillStyle = '#8a8578'
-    ctx.font = '18px sans-serif'
-    ctx.fillText(subtitle, CANVAS_W / 2, 76)
+    ctx.font = this.pxFont(Math.round(1.0 * CM), true)
+    ctx.fillText(title, PAGE_W / 2, Math.round(1.3 * CM))
+    if (subtitle) {
+      ctx.fillStyle = '#8a8578'
+      ctx.font = this.pxFont(Math.round(0.5 * CM), false)
+      ctx.fillText(subtitle, PAGE_W / 2, Math.round(2.1 * CM))
+    }
   },
 
-  drawFooter(ctx, H) {
+  drawFooter(ctx) {
     ctx.fillStyle = '#8a8578'
-    ctx.font = '18px sans-serif'
+    ctx.font = this.pxFont(Math.round(0.45 * CM), false)
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText('墨学 · 坚持练习，写好每一个汉字', CANVAS_W / 2, H - FOOTER / 2)
+    ctx.fillText('墨学 · A4 打印请选「实际大小 / 100%」', PAGE_W / 2, PAGE_H - Math.round(0.9 * CM))
   },
 
-  drawGridSheet(ctx, chars, cols, rows, cell, gridStyle, H) {
-    this.drawHeader(ctx, '墨学 · 汉字练习字帖', formatDate())
+  drawChar(ctx, char, x, y, cell, color) {
+    ctx.fillStyle = color
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.font = this.pxFont(Math.floor(cell * 0.72), true)
+    ctx.fillText(char, x + cell / 2, y + cell / 2)
+  },
+
+  drawGridSheet(ctx, chars, cols, rows, cell, startX) {
+    const gridStyle = this.data.gridStyle
+    this.drawHeader(ctx, '汉字练习字帖', formatDate())
     for (let r = 0; r < rows; r += 1) {
       for (let c = 0; c < cols; c += 1) {
-        const x = MARGIN + c * cell
+        const x = startX + c * cell
         const y = HEADER + r * cell
         this.drawGrid(ctx, x, y, cell, gridStyle)
         const char = chars[(r * cols + c) % chars.length]
         this.drawChar(ctx, char, x, y, cell, r === 0 ? '#2b2b2b' : '#cfc7b4')
       }
     }
-    this.drawFooter(ctx, H)
+    this.drawFooter(ctx)
   },
 
-  drawPoemSheet(ctx, lines, cols, cell, blockRows, gridStyle, H) {
+  drawPoemSheet(ctx, lines, cell, blockRows) {
     const poem = this.data.poem
+    const gridStyle = this.data.gridStyle
+    const cols = Math.max.apply(null, lines.map((l) => l.length))
+    const gridW = cols * cell
+    const startBase = Math.round((PAGE_W - gridW) / 2)
+    const blockH = blockRows * cell + LINE_GAP
+    const totalH = lines.length * blockH
+    let startY = HEADER + Math.max(0, Math.floor((PAGE_H - HEADER - FOOTER - totalH) / 2))
     const sub = [poem.dynasty, poem.author].filter(Boolean).join(' · ')
     this.drawHeader(ctx, poem.title || '古诗字帖', sub || formatDate())
 
     lines.forEach((lineChars, i) => {
-      const y0 = HEADER + i * (blockRows * cell + LINE_GAP)
-      const startX = MARGIN + ((cols - lineChars.length) / 2) * cell
+      const y0 = startY + i * blockH
+      const startX = startBase + Math.round(((cols - lineChars.length) / 2) * cell)
       for (let row = 0; row < blockRows; row += 1) {
         const y = y0 + row * cell
         const color = row === 0 ? '#2b2b2b' : '#cfc7b4'
@@ -250,22 +274,14 @@ Page({
         }
       }
     })
-    this.drawFooter(ctx, H)
-  },
-
-  drawChar(ctx, char, x, y, cell, color) {
-    ctx.fillStyle = color
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.font = `${Math.floor(cell * 0.7)}px "Songti SC", serif`
-    ctx.fillText(char, x + cell / 2, y + cell / 2)
+    this.drawFooter(ctx)
   },
 
   drawGrid(ctx, x, y, size, style) {
     const gridColor = 'rgba(178,58,51,0.55)'
-    const subColor = 'rgba(178,58,51,0.28)'
+    const subColor = 'rgba(178,58,51,0.3)'
     ctx.save()
-    ctx.lineWidth = 1
+    ctx.lineWidth = 2
     ctx.strokeStyle = gridColor
 
     if (style === 'hline') {
@@ -285,7 +301,7 @@ Page({
       return
     }
 
-    ctx.strokeRect(x + 0.5, y + 0.5, size - 1, size - 1)
+    ctx.strokeRect(x + 1, y + 1, size - 2, size - 2)
 
     ctx.strokeStyle = subColor
     ctx.beginPath()
