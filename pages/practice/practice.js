@@ -89,9 +89,10 @@ Page({
     })
   },
 
-  createWriter() {
+  createWriter(charArg) {
     this.destroyWriter()
-    const { char, mode } = this.data
+    const { mode } = this.data
+    const char = charArg || this.data.char
     this.setData({ loading: true, error: '' })
 
     try {
@@ -205,6 +206,6 @@ Page({
       isFav: storage.isFavorite(char),
       practiced: record.count
     })
-    this.createWriter()
+    this.createWriter(char)
   }
 })

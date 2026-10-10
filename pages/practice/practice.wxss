@@ -36,31 +36,16 @@
   margin: 0 auto;
   padding: 12rpx;
 }
-/* 田字格背景 */
+/* 田字格背景（用背景绘制，保证在画布之下） */
 .stage.with-grid {
   background-image:
+    linear-gradient(rgba(178, 58, 51, 0.22), rgba(178, 58, 51, 0.22)),
+    linear-gradient(rgba(178, 58, 51, 0.22), rgba(178, 58, 51, 0.22)),
     linear-gradient(to right, rgba(178, 58, 51, 0.16) 1rpx, transparent 1rpx),
     linear-gradient(to bottom, rgba(178, 58, 51, 0.16) 1rpx, transparent 1rpx);
-  background-size: 50% 50%;
+  background-size: 100% 1rpx, 1rpx 100%, 50% 50%, 50% 50%;
   background-position: center center;
-}
-.stage.with-grid::before,
-.stage.with-grid::after {
-  content: "";
-  position: absolute;
-  background-color: rgba(178, 58, 51, 0.22);
-}
-.stage.with-grid::before {
-  left: 12rpx;
-  right: 12rpx;
-  top: 50%;
-  height: 1rpx;
-}
-.stage.with-grid::after {
-  top: 12rpx;
-  bottom: 12rpx;
-  left: 50%;
-  width: 1rpx;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
 }
 
 .loading,
