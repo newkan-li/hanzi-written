@@ -20,23 +20,25 @@ function allLessonIds() {
   return ids
 }
 
-function pickDailyLesson() {
-  const ids = allLessonIds()
-  if (!ids.length) return null
-  const id = ids[dayOfYear() % ids.length]
+function buildLesson(id) {
   const L = textbook.lessons[id]
   if (!L) return null
-  const book = textbook.books.find((b) =>
-    b.units.some((u) => u.lessons.indexOf(id) > -1)
-  )
+  const book = textbook.books.find((b) => b.units.some((u) => u.lessons.indexOf(id) > -1))
   const chars = Array.from(new Set([].concat(L.shizi || [], L.xiezi || []))).slice(0, 12)
   return {
     id,
     title: L.title,
     kind: L.kind,
     bookName: book ? book.name : '',
+    bookId: book ? book.id : '',
     chars
   }
+}
+
+function pickDailyLesson() {
+  const ids = allLessonIds()
+  if (!ids.length) return null
+  return buildLesson(ids[dayOfYear() % ids.length])
 }
 
 Page({
@@ -127,6 +129,23 @@ Page({
   onOpenPoem(e) {
     const id = e.currentTarget.dataset.id
     wx.navigateTo({ url: '/pages/poem/poem' + (id ? '?id=' + id : '') })
+  },
+
+  onMorePoem() {
+    wx.navigateTo({ url: '/pages/poem/poem' })
+  },
+
+  shuffleLesson() {
+    const ids = allLessonIds()
+    if (!ids.length) return
+    const id = ids[Math.floor(Math.random() * ids.length)]
+    const lesson = buildLesson(id)
+    if (lesson) this.setData({ dailyLesson: lesson })
+  },
+
+  shufflePoem() {
+    const poem = poems[Math.floor(Math.random() * poems.length)]
+    if (poem) this.setData({ todayPoem: poem })
   },
 
   onScribe() {

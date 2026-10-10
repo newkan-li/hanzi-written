@@ -42,6 +42,10 @@
         bindtap="onTapChar"
       >{{item}}</view>
     </view>
+    <view class="card-links">
+      <text class="link" catchtap="onOpenTextbook" data-book="{{dailyLesson.bookId}}">选择课程 ›</text>
+      <text class="link" catchtap="shuffleLesson">换一个</text>
+    </view>
   </view>
 
   <view class="poemcard card" wx:if="{{todayPoem}}" data-id="{{todayPoem.id}}" bindtap="onOpenPoem">
@@ -49,6 +53,10 @@
     <view class="poem-title">{{todayPoem.title}}</view>
     <view class="muted">{{todayPoem.dynasty}} · {{todayPoem.author}}</view>
     <view class="poem-line">{{todayPoem.lines[0]}}</view>
+    <view class="card-links">
+      <text class="link" catchtap="onMorePoem">古诗列表 ›</text>
+      <text class="link" catchtap="shufflePoem">换一个</text>
+    </view>
   </view>
 
   <view class="grades">
