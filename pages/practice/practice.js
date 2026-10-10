@@ -1,4 +1,4 @@
-import createHanziWriterContext from 'hanzi-writer-miniprogram'
+const createHanziWriterContext = require('../../vendor/hanzi-writer/index')
 
 const { loadCharData } = require('../../utils/charData')
 const storage = require('../../utils/storage')
@@ -59,6 +59,36 @@ Page({
     this.destroyWriter()
   },
 
+  waitForCanvas() {
+    return new Promise((resolve) => {
+      const start = Date.now()
+      const tryQuery = () => {
+        const comp = this.selectComponent && this.selectComponent('#hz-writer')
+        if (comp) {
+          comp
+            .createSelectorQuery()
+            .select('#writer-canvas')
+            .fields({ node: true })
+            .exec((res) => {
+              const info = res && res[0]
+              if (info && info.node) {
+                setTimeout(resolve, 30)
+              } else if (Date.now() - start > 3000) {
+                resolve()
+              } else {
+                setTimeout(tryQuery, 16)
+              }
+            })
+        } else if (Date.now() - start > 3000) {
+          resolve()
+        } else {
+          setTimeout(tryQuery, 16)
+        }
+      }
+      tryQuery()
+    })
+  },
+
   createWriter() {
     this.destroyWriter()
     const { char, mode } = this.data
@@ -79,7 +109,9 @@ Page({
         strokeAnimationSpeed: 1,
         delayBetweenStrokes: 250,
         charDataLoader: (c, onLoad, onError) => {
-          loadCharData(c).then(onLoad).catch(onError)
+          Promise.all([loadCharData(c), this.waitForCanvas()])
+            .then((res) => onLoad(res[0]))
+            .catch(onError)
         },
         onLoadCharDataSuccess: () => {
           this.setData({ loading: false })
@@ -114,11 +146,6 @@ Page({
     if (!this.writerCtx) return
     try {
       this.writerCtx.cancelQuiz()
-    } catch (e) {
-      /* 忽略 */
-    }
-    try {
-      this.writerCtx.hideCharacter()
     } catch (e) {
       /* 忽略 */
     }

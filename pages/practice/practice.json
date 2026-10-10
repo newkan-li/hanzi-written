@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "练字",
   "usingComponents": {
-    "hanzi-writer-view": "hanzi-writer-miniprogram/hanzi-writer-view"
+    "hanzi-writer-view": "/vendor/hanzi-writer/hanzi-writer-view"
   }
 }

@@ -9,7 +9,7 @@
 - **纯本地存储**：练习记录/收藏存本地，零后端、零服务器成本。
 - **小字库内置 + 大库按需缓存**：笔画数据默认从 jsDelivr CDN 按需下载并写入本地文件缓存，既控制小程序包体（主包 2MB / 分包合计 20MB），又能离线复用。
 - **工具类目定位**：面向「笔顺查询 / 练字工具」，规避教育类目资质门槛。
-- 官方 `hanzi-writer-miniprogram` 作为 npm 组件使用，插件代码不占主包体积。
+- **组件已内置（vendored）**：`hanzi-writer` 及小程序封装放在 `vendor/hanzi-writer/`，**无需 `npm install`、无需「构建 npm」**，克隆即可用。已修补新版基础库下 `Path2D` 导致的空白问题。
 
 ## 目录结构
 
@@ -17,7 +17,6 @@
 .
 ├── app.js / app.json / app.wxss      # 全局逻辑与主题
 ├── project.config.json               # 开发者工具项目配置
-├── package.json                      # hanzi-writer-miniprogram 依赖
 ├── data/
 │   ├── commonChars.js                # 字库分类与「每日一字」字池（仅字符）
 │   └── embedded.js                   # 可选：预置内置笔画数据
@@ -25,6 +24,8 @@
 │   ├── config.js                     # CDN、域名等配置
 │   ├── charData.js                   # 字库加载：内存 -> 内置 -> 本地缓存 -> CDN
 │   └── storage.js                    # 练习记录与收藏
+├── vendor/
+│   └── hanzi-writer/                 # 内置的 hanzi-writer + 小程序组件（免构建）
 └── pages/
     ├── index/                        # 首页：搜索、每日一字、分类
     ├── category/                     # 字库列表
@@ -34,23 +35,15 @@
 
 ## 快速开始
 
-1. 安装依赖（需要 Node.js）：
-
-   ```bash
-   npm install
-   ```
-
-   > `hanzi-writer-miniprogram` 已停止维护，最后一个可用版本通过 `@beta` 标签发布，`package.json` 已固定为 `beta`。
-
-2. 用微信开发者工具打开本项目根目录。
-
-3. 构建 npm：菜单 **工具 → 构建 npm**，生成 `miniprogram_npm/`。
-
-4. 配置服务器域名（二选一）：
+1. 用微信开发者工具打开本项目根目录（**无需 npm install / 构建 npm**）。
+2. 配置服务器域名（二选一）：
    - 开发阶段：开发者工具 **详情 → 本地设置** 勾选「不校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书」；
    - 正式发布：微信公众平台 **开发 → 开发设置 → 服务器域名**，把 `https://cdn.jsdelivr.net` 加入 **request 合法域名**。
+3. `project.config.json` 中的 `appid` 为占位，正式开发请替换为自己的小程序 AppID。
 
-5. `project.config.json` 中的 `appid` 为占位 `touristappid`，正式开发请替换为自己的小程序 AppID。
+> 组件已在 `vendor/hanzi-writer/` 内置，并做了两处兼容修补：
+> 1. 新版基础库暴露全局 `Path2D`，`new Path2D(pathString)` 在小程序不可用会导致空白——已强制走微信兼容绘制分支；
+> 2. 字库数据就绪与 canvas 初始化存在竞态——练字页会等待画布节点就绪后再渲染。
 
 ## 字库策略说明
 
