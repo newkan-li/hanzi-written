@@ -57,6 +57,19 @@
   <view class="poem-tip muted" wx:if="{{poem}}">{{poem.title}}<text wx:if="{{poem.dynasty}}"> · {{poem.dynasty}} {{poem.author}}</text></view>
 
   <view class="opt-row">
+    <text class="opt-label">纸张</text>
+    <view class="chips">
+      <view
+        class="chip sm {{orientation === item.key ? 'active' : ''}}"
+        wx:for="{{orientations}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="pickOrientation"
+      >{{item.name}}</view>
+    </view>
+  </view>
+
+  <view class="opt-row">
     <text class="opt-label">格子大小</text>
     <view class="chips">
       <view
