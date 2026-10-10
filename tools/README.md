@@ -19,6 +19,19 @@ node tools/gen-data.mjs --src <基地址> --out ./data
 
 > `data/idioms.js`（成语）与 `data/charInfo.js`（字典）为手工整理，不在本脚本内。
 
+## gen-themes.mjs —— 按主题归类课本汉字
+
+把**课本出现的字**按 5 个主题归类，生成 `data/themeChars.js`（字库分类用）：
+
+```bash
+node tools/gen-themes.mjs
+```
+
+- 自然 / 品德 / 入门：主题词表种子 ∩ 课本字集。
+- 古诗名句：课本古诗用字 ∩ 课本字集（去除已归类的）。
+- 日常常用：剩余课本字（按出现顺序取前 400）。
+- 语义分类为**启发式**，可扩充 `tools/gen-themes.mjs` 里的 `SEEDS` 词表后重跑。
+
 ## fetch-strokes.mjs —— 下载笔画数据（自建托管）
 
 把教材汉字的 hanzi-writer 笔画数据下载到本地，用于上传到自有存储、摆脱 jsDelivr。
