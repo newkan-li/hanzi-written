@@ -115,29 +115,32 @@ Page({
 
   onTapPoemChar(e) {
     const char = e.currentTarget.dataset.char
-    const poem = this.data.poem
-    if (!poem) return
-    const chars = poem.chars
+    if (!/[\u4e00-\u9fa5]/.test(char)) return
+    const src = poems[this.data.poemIndex]
+    if (!src) return
+    const chars = poemChars(src.lines)
     const index = chars.indexOf(char)
-    getApp().globalData.practiceList = chars
-    getApp().globalData.practiceIndex = index < 0 ? 0 : index
-    getApp().globalData.practiceNote = { title: poem.title, desc: `${poem.dynasty}·${poem.author}` }
+    const app = getApp()
+    app.globalData.practiceList = chars
+    app.globalData.practiceIndex = index < 0 ? 0 : index
+    app.globalData.practiceNote = { title: src.title, desc: src.lines.join('') }
     wx.navigateTo({ url: '/pages/practice/practice' })
   },
 
   practicePoem() {
-    const poem = this.data.poem
-    if (!poem) return
-    getApp().globalData.practiceList = poem.chars
-    getApp().globalData.practiceIndex = 0
-    getApp().globalData.practiceNote = { title: poem.title, desc: `${poem.dynasty}·${poem.author}` }
+    const src = poems[this.data.poemIndex]
+    if (!src) return
+    const app = getApp()
+    app.globalData.practiceList = poemChars(src.lines)
+    app.globalData.practiceIndex = 0
+    app.globalData.practiceNote = { title: src.title, desc: src.lines.join('') }
     wx.navigateTo({ url: '/pages/practice/practice' })
   },
 
   worksheetPoem() {
-    const poem = this.data.poem
-    if (!poem) return
-    getApp().globalData.worksheetList = poem.chars
+    const src = poems[this.data.poemIndex]
+    if (!src) return
+    getApp().globalData.worksheetList = poemChars(src.lines)
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
   }
 })
