@@ -5,6 +5,8 @@
     "pages/category/category",
     "pages/practice/practice",
     "pages/idiom/idiom",
+    "pages/textbook/textbook",
+    "pages/dictation/dictation",
     "pages/weak/weak",
     "pages/worksheet/worksheet",
     "pages/poster/poster",
@@ -12,19 +14,6 @@
     "pages/traj/traj",
     "pages/profile/profile"
   ],
-  "subPackages": [
-    {
-      "root": "packages/textbook",
-      "name": "textbook",
-      "pages": ["pages/textbook/textbook", "pages/dictation/dictation"]
-    }
-  ],
-  "preloadRule": {
-    "pages/library/library": {
-      "network": "all",
-      "packages": ["textbook"]
-    }
-  },
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#f7f4ec",

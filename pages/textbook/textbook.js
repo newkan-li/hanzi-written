@@ -18,8 +18,10 @@ Page({
     currentLesson: null
   },
 
-  onLoad() {
-    this.pickBookById(data.books[0].id)
+  onLoad(options) {
+    const wanted = (options && options.book) || ''
+    const exists = data.books.some((b) => b.id === wanted)
+    this.pickBookById(exists ? wanted : data.books[0].id)
   },
 
   pickBook(e) {
@@ -118,7 +120,7 @@ Page({
     const app = getApp()
     app.globalData.dictationChars = chars
     app.globalData.dictationTitle = this.data.currentLesson.title
-    wx.navigateTo({ url: '/packages/textbook/pages/dictation/dictation' })
+    wx.navigateTo({ url: '/pages/dictation/dictation' })
   },
 
   dictationBook() {
@@ -127,6 +129,6 @@ Page({
     const app = getApp()
     app.globalData.dictationChars = chars
     app.globalData.dictationTitle = this.data.book.name
-    wx.navigateTo({ url: '/packages/textbook/pages/dictation/dictation' })
+    wx.navigateTo({ url: '/pages/dictation/dictation' })
   }
 })

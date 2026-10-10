@@ -24,24 +24,70 @@
     <view class="daily-char">{{daily}}</view>
   </view>
 
+  <view class="lesson card" wx:if="{{dailyLesson}}">
+    <view class="lesson-head">
+      <view>
+        <view class="tag">今日一课</view>
+        <view class="lesson-title">{{dailyLesson.title}}</view>
+        <view class="muted">{{dailyLesson.bookName}} · {{dailyLesson.kind}}</view>
+      </view>
+      <view class="lesson-go" bindtap="onPracticeLesson">练这一课</view>
+    </view>
+    <view class="lesson-chars">
+      <view
+        class="lchar"
+        wx:for="{{dailyLesson.chars}}"
+        wx:key="*this"
+        data-char="{{item}}"
+        bindtap="onTapChar"
+      >{{item}}</view>
+    </view>
+  </view>
+
+  <view class="grades">
+    <view class="grades-label">教材同步</view>
+    <scroll-view scroll-x class="grades-scroll" enable-flex>
+      <view
+        class="grade"
+        wx:for="{{books}}"
+        wx:key="id"
+        data-book="{{item.id}}"
+        bindtap="onOpenTextbook"
+      >{{item.short}}</view>
+    </scroll-view>
+  </view>
+
   <view class="quick">
+    <view class="quick-item card" bindtap="onOpenTextbook">
+      <view class="quick-name">教材同步</view>
+      <view class="muted">1-6 年级生字</view>
+    </view>
     <view class="quick-item card" bindtap="onWorksheet">
       <view class="quick-name">生成字帖</view>
-      <view class="muted">选字排版，导出打印</view>
+      <view class="muted">选字排版打印</view>
     </view>
     <view class="quick-item card" bindtap="onIdiom">
       <view class="quick-name">成语练字</view>
-      <view class="muted">成语拼音与释义</view>
-    </view>
-    <view class="quick-item card" bindtap="onPoster">
-      <view class="quick-name">练习海报</view>
-      <view class="muted">生成图片去分享</view>
+      <view class="muted">拼音与释义</view>
     </view>
     <view class="quick-item card" bindtap="onScribe">
       <view class="quick-name">自由书写</view>
       <view class="muted">临摹练习轨迹</view>
     </view>
   </view>
+
+  <block wx:if="{{recent.length}}">
+    <view class="section-title">最近练习</view>
+    <view class="chips">
+      <view
+        class="chip"
+        wx:for="{{recent}}"
+        wx:key="*this"
+        data-char="{{item}}"
+        bindtap="onTapChar"
+      >{{item}}</view>
+    </view>
+  </block>
 
   <view class="section-title">字库分类</view>
   <view class="grid">

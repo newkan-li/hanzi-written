@@ -1,20 +1,66 @@
 const { categories, dailyPool } = require('../../data/commonChars')
+const textbook = require('../../data/textbook')
+const storage = require('../../utils/storage')
+
+function dayOfYear() {
+  const start = new Date(new Date().getFullYear(), 0, 0)
+  return Math.floor((Date.now() - start.getTime()) / 86400000)
+}
 
 function pickDaily() {
-  const start = new Date(new Date().getFullYear(), 0, 0)
-  const day = Math.floor((Date.now() - start.getTime()) / 86400000)
-  return dailyPool[day % dailyPool.length]
+  return dailyPool[dayOfYear() % dailyPool.length]
+}
+
+function allLessonIds() {
+  const ids = []
+  textbook.books.forEach((b) =>
+    b.units.forEach((u) => u.lessons.forEach((id) => ids.push(id)))
+  )
+  return ids
+}
+
+function pickDailyLesson() {
+  const ids = allLessonIds()
+  if (!ids.length) return null
+  const id = ids[dayOfYear() % ids.length]
+  const L = textbook.lessons[id]
+  if (!L) return null
+  const book = textbook.books.find((b) =>
+    b.units.some((u) => u.lessons.indexOf(id) > -1)
+  )
+  const chars = Array.from(new Set([].concat(L.shizi || [], L.xiezi || []))).slice(0, 12)
+  return {
+    id,
+    title: L.title,
+    kind: L.kind,
+    bookName: book ? book.name : '',
+    chars
+  }
 }
 
 Page({
   data: {
     daily: '',
     query: '',
-    categories
+    categories,
+    dailyLesson: null,
+    books: textbook.books.map((b) => ({ id: b.id, short: b.short, name: b.name })),
+    recent: []
   },
 
   onLoad() {
-    this.setData({ daily: pickDaily() })
+    this.setData({
+      daily: pickDaily(),
+      dailyLesson: pickDailyLesson()
+    })
+  },
+
+  onShow() {
+    const recent = storage
+      .getRecords()
+      .slice(0, 10)
+      .map((it) => it.char)
+    this.setData({ recent })
   },
 
   onInput(e) {
@@ -36,6 +82,31 @@ Page({
     this.openPractice(chars, 0)
   },
 
+  onTapChar(e) {
+    const char = e.currentTarget.dataset.char
+    this.openPractice([char], 0)
+  },
+
+  onPracticeLesson() {
+    const lesson = this.data.dailyLesson
+    if (!lesson || !lesson.chars.length) return
+    const app = getApp()
+    app.globalData.practiceList = lesson.chars
+    app.globalData.practiceIndex = 0
+    app.globalData.practiceNote = {
+      title: lesson.title,
+      desc: `${lesson.bookName} · ${lesson.kind}`
+    }
+    wx.navigateTo({ url: '/pages/practice/practice' })
+  },
+
+  onOpenTextbook(e) {
+    const book = e.currentTarget.dataset.book
+    wx.navigateTo({
+      url: '/pages/textbook/textbook' + (book ? '?book=' + book : '')
+    })
+  },
+
   onOpenCategory(e) {
     const key = e.currentTarget.dataset.key
     wx.navigateTo({ url: `/pages/category/category?key=${key}` })
@@ -46,11 +117,6 @@ Page({
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
   },
 
-  onPoster() {
-    getApp().globalData.posterChar = this.data.daily
-    wx.navigateTo({ url: '/pages/poster/poster' })
-  },
-
   onIdiom() {
     wx.navigateTo({ url: '/pages/idiom/idiom' })
   },
@@ -59,9 +125,9 @@ Page({
     wx.navigateTo({ url: '/pages/scribe/scribe' })
   },
 
-  onTapChar(e) {
-    const { char, chars } = e.currentTarget.dataset
-    this.openPractice(chars || [char], (chars || [char]).indexOf(char))
+  onPoster() {
+    getApp().globalData.posterChar = this.data.daily
+    wx.navigateTo({ url: '/pages/poster/poster' })
   },
 
   openPractice(list, index) {

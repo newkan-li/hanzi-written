@@ -20,6 +20,6 @@ Page({
   },
 
   onOpenTextbook() {
-    wx.navigateTo({ url: '/packages/textbook/pages/textbook/textbook' })
+    wx.navigateTo({ url: '/pages/textbook/textbook' })
   }
 })
