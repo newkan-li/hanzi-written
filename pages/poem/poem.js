@@ -1,5 +1,6 @@
 const poems = require('../../data/poems')
 const textbook = require('../../data/textbook')
+const storage = require('../../utils/storage')
 
 const BOOKS = textbook.books.map((b) => ({ id: b.id, short: b.short, name: b.name }))
 
@@ -48,6 +49,7 @@ Page({
   pickPoem(e) {
     const id = e.currentTarget.dataset.id
     const poem = poems.find((p) => p.id === id)
+    if (poem) storage.setPref('homePoem', id)
     this.setData({ currentPoem: poem || null })
   },
 

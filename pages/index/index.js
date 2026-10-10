@@ -55,8 +55,8 @@ Page({
   onLoad() {
     this.setData({
       daily: pickDaily(),
-      dailyLesson: pickDailyLesson(),
-      todayPoem: poems[dayOfYear() % poems.length]
+      dailyLesson: this.resolveLesson(),
+      todayPoem: this.resolvePoem()
     })
   },
 
@@ -65,7 +65,29 @@ Page({
       .getRecords()
       .slice(0, 10)
       .map((it) => it.char)
-    this.setData({ recent })
+    this.setData({
+      recent,
+      dailyLesson: this.resolveLesson(),
+      todayPoem: this.resolvePoem()
+    })
+  },
+
+  resolveLesson() {
+    const id = storage.getPref('homeLesson', '')
+    if (id) {
+      const lesson = buildLesson(id)
+      if (lesson) return lesson
+    }
+    return pickDailyLesson()
+  },
+
+  resolvePoem() {
+    const id = storage.getPref('homePoem', '')
+    if (id) {
+      const poem = poems.find((p) => p.id === id)
+      if (poem) return poem
+    }
+    return poems[dayOfYear() % poems.length]
   },
 
   onInput(e) {
@@ -140,12 +162,18 @@ Page({
     if (!ids.length) return
     const id = ids[Math.floor(Math.random() * ids.length)]
     const lesson = buildLesson(id)
-    if (lesson) this.setData({ dailyLesson: lesson })
+    if (lesson) {
+      storage.setPref('homeLesson', id)
+      this.setData({ dailyLesson: lesson })
+    }
   },
 
   shufflePoem() {
     const poem = poems[Math.floor(Math.random() * poems.length)]
-    if (poem) this.setData({ todayPoem: poem })
+    if (poem) {
+      storage.setPref('homePoem', poem.id)
+      this.setData({ todayPoem: poem })
+    }
   },
 
   onScribe() {

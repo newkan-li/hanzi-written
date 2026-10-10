@@ -1,4 +1,5 @@
 const data = require('../../data/textbook')
+const storage = require('../../utils/storage')
 
 Page({
   data: {
@@ -51,6 +52,7 @@ Page({
     const id = e.currentTarget.dataset.id
     const L = data.lessons[id]
     if (!L) return
+    storage.setPref('homeLesson', id)
     this.setData({
       currentLesson: {
         id,
