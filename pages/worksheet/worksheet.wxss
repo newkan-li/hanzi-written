@@ -74,7 +74,6 @@
 .count {
   margin: 24rpx 0;
 }
-
 .worksheet-canvas {
   margin: 24rpx auto 0;
   background-color: #fdfbf5;
@@ -90,4 +89,11 @@
 }
 .preview-actions .btn {
   flex: 1;
+}
+
+.poem-tip {
+  margin: 8rpx 0 4rpx;
+  font-family: "Songti SC", serif;
+  font-size: 30rpx;
+  color: #2b2b2b;
 }

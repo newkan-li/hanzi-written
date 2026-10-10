@@ -140,7 +140,14 @@ Page({
   worksheetPoem() {
     const src = poems[this.data.poemIndex]
     if (!src) return
-    getApp().globalData.worksheetList = poemChars(src.lines)
+    const app = getApp()
+    app.globalData.worksheetList = poemChars(src.lines)
+    app.globalData.worksheetPoem = {
+      title: src.title,
+      dynasty: src.dynasty,
+      author: src.author,
+      lines: src.lines
+    }
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
   }
 })

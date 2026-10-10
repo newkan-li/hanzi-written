@@ -44,27 +44,54 @@
   </view>
 
   <view class="section-title">排版</view>
-  <view class="opt-row">
-    <text class="opt-label">列数</text>
-    <view class="chips">
-      <view
-        class="chip sm {{cols === item ? 'active' : ''}}"
-        wx:for="{{colsOptions}}"
-        wx:key="*this"
-        data-value="{{item}}"
-        bindtap="pickCols"
-      >{{item}}</view>
-    </view>
+  <view class="chips">
+    <view class="chip {{layout === 'grid' ? 'active' : ''}}" data-key="grid" bindtap="pickLayout">字表排版</view>
+    <view
+      wx:if="{{poem}}"
+      class="chip {{layout === 'poem' ? 'active' : ''}}"
+      data-key="poem"
+      bindtap="pickLayout"
+    >诗句排版</view>
   </view>
-  <view class="opt-row">
-    <text class="opt-label">行数</text>
+
+  <view class="poem-tip muted" wx:if="{{poem}}">{{poem.title}}<text wx:if="{{poem.dynasty}}"> · {{poem.dynasty}} {{poem.author}}</text></view>
+
+  <block wx:if="{{layout === 'grid'}}">
+    <view class="opt-row">
+      <text class="opt-label">列数</text>
+      <view class="chips">
+        <view
+          class="chip sm {{cols === item ? 'active' : ''}}"
+          wx:for="{{colsOptions}}"
+          wx:key="*this"
+          data-value="{{item}}"
+          bindtap="pickCols"
+        >{{item}}</view>
+      </view>
+    </view>
+    <view class="opt-row">
+      <text class="opt-label">行数</text>
+      <view class="chips">
+        <view
+          class="chip sm {{rows === item ? 'active' : ''}}"
+          wx:for="{{rowsOptions}}"
+          wx:key="*this"
+          data-value="{{item}}"
+          bindtap="pickRows"
+        >{{item}}</view>
+      </view>
+    </view>
+  </block>
+
+  <view class="opt-row" wx:else>
+    <text class="opt-label">描红行</text>
     <view class="chips">
       <view
-        class="chip sm {{rows === item ? 'active' : ''}}"
-        wx:for="{{rowsOptions}}"
+        class="chip sm {{traceRows === item ? 'active' : ''}}"
+        wx:for="{{traceOptions}}"
         wx:key="*this"
         data-value="{{item}}"
-        bindtap="pickRows"
+        bindtap="pickTrace"
       >{{item}}</view>
     </view>
   </view>

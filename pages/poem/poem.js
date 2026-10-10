@@ -66,7 +66,14 @@ Page({
   worksheetPoem() {
     const poem = this.data.currentPoem
     if (!poem) return
-    getApp().globalData.worksheetList = chineseChars(poem.lines)
+    const app = getApp()
+    app.globalData.worksheetList = chineseChars(poem.lines)
+    app.globalData.worksheetPoem = {
+      title: poem.title,
+      dynasty: poem.dynasty,
+      author: poem.author,
+      lines: poem.lines
+    }
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
   }
 })
