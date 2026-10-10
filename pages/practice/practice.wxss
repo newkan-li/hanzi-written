@@ -160,6 +160,20 @@
   background-color: #b23a33;
 }
 
+.pen-chip {
+  padding: 12rpx 30rpx;
+  border-radius: 28rpx;
+  border: 1rpx solid #d8cfb8;
+  color: #8a8578;
+  font-size: 26rpx;
+  margin-right: 16rpx;
+}
+.pen-chip.active {
+  border-color: #b23a33;
+  color: #fff;
+  background-color: #b23a33;
+}
+
 .toolbar {
   width: 100%;
   display: flex;

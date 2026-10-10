@@ -20,12 +20,24 @@ const GRIDS = [
   { key: 'none', name: '无' }
 ]
 
+const PENS = [
+  { key: 'pencil', name: '铅笔', color: '#7d7d7d', width: 6 },
+  { key: 'pen', name: '钢笔', color: '#1b3a8a', width: 9 },
+  { key: 'brush', name: '毛笔', color: '#141414', width: 20 }
+]
+
+function penStyle(key) {
+  return PENS.find((p) => p.key === key) || PENS[0]
+}
+
 Page({
   data: {
     modes: MODES,
     mode: 'animate',
     gridStyles: GRIDS,
     gridStyle: 'tian',
+    pens: PENS,
+    pen: 'pencil',
     chars: [],
     index: 0,
     char: '',
@@ -65,6 +77,7 @@ Page({
       size,
       note,
       gridStyle: storage.getPref('gridStyle', 'tian'),
+      pen: storage.getPref('pen', 'pencil'),
       isFav: storage.isFavorite(char),
       practiced: record.count
     })
@@ -165,6 +178,7 @@ Page({
     }
 
     try {
+      const pen = penStyle(this.data.pen)
       this.writerCtx = createHanziWriterContext({
         id: 'hz-writer',
         character: char,
@@ -174,8 +188,8 @@ Page({
         strokeColor: '#2b2b2b',
         radicalColor: '#b23a33',
         highlightColor: '#e0b84c',
-        drawingColor: '#2b2b2b',
-        drawingWidth: 24,
+        drawingColor: pen.color,
+        drawingWidth: pen.width,
         strokeAnimationSpeed: 1,
         delayBetweenStrokes: 250,
         charDataLoader: (c, onLoad, onError) => {
@@ -264,6 +278,17 @@ Page({
     const gridStyle = e.currentTarget.dataset.key
     this.setData({ gridStyle })
     storage.setPref('gridStyle', gridStyle)
+  },
+
+  pickPen(e) {
+    const pen = e.currentTarget.dataset.key
+    if (pen === this.data.pen) return
+    storage.setPref('pen', pen)
+    // 笔色/笔宽在实例创建时确定，切换后重建一次画布
+    this.setData({ pen }, () => {
+      this.destroyWriter()
+      this.createWriter()
+    })
   },
 
   onWordTap(e) {

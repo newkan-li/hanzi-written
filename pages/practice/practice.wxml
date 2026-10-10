@@ -38,6 +38,17 @@
     >{{item.name}}</view>
   </view>
 
+  <view class="grids" wx:if="{{mode !== 'animate'}}">
+    <view class="grid-label">笔</view>
+    <view
+      class="pen-chip {{pen === item.key ? 'active' : ''}}"
+      wx:for="{{pens}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="pickPen"
+    >{{item.name}}</view>
+  </view>
+
   <view class="toolbar">
     <view class="btn ghost" data-delta="-1" bindtap="go">上一个</view>
     <view class="btn" bindtap="replay">再写一遍</view>
