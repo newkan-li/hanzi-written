@@ -1,6 +1,6 @@
 const pinyin = require('../../data/pinyin')
-const config = require('../../../utils/config')
-const storage = require('../../../utils/storage')
+const config = require('../../../../utils/config')
+const storage = require('../../../../utils/storage')
 
 const POOL = Object.keys(pinyin)
 
