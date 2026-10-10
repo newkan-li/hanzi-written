@@ -32,6 +32,19 @@ node tools/gen-themes.mjs
 - 日常常用：剩余课本字（按出现顺序取前 400）。
 - 语义分类为**启发式**，可扩充 `tools/gen-themes.mjs` 里的 `SEEDS` 词表后重跑。
 
+## gen-dict.mjs —— 生成汉字字典
+
+为小程序用到的汉字（教材 ∪ 成语 ∪ 古诗 ∪ 手工字典）生成 `data/charDict.js`：
+**拼音 / 部首 / 笔画 / 结构 / 释义**。
+
+```bash
+node tools/gen-dict.mjs
+```
+
+- 数据源：`pwxcoo/chinese-xinhua`（部首/笔画/拼音/释义）+ `skishore/makemeahanzi`（部首/IDS 分解→结构）。
+- 首次运行会下载较大文件（word.json ≈27MB、dictionary.txt ≈2.5MB），并缓存到系统临时目录，之后复用。
+- 练字页「汉字详情」优先用 `data/charInfo.js`（手工精校），缺失字段回退 `data/charDict.js`。
+
 ## fetch-strokes.mjs —— 下载笔画数据（自建托管）
 
 把教材汉字的 hanzi-writer 笔画数据下载到本地，用于上传到自有存储、摆脱 jsDelivr。

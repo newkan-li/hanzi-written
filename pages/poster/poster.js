@@ -1,5 +1,6 @@
 const storage = require('../../utils/storage')
 const { charInfo } = require('../../data/charInfo')
+const charDict = require('../../data/charDict')
 
 const W = 600
 const H = 800
@@ -55,7 +56,7 @@ Page({
 
   draw(ctx, char) {
     const stats = storage.getStats()
-    const dict = charInfo[char] || {}
+    const dict = charInfo[char] || charDict[char] || {}
 
     ctx.fillStyle = '#f7f4ec'
     ctx.fillRect(0, 0, W, H)

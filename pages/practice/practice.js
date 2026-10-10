@@ -4,6 +4,7 @@ const { loadCharData } = require('../../utils/charData')
 const storage = require('../../utils/storage')
 const config = require('../../utils/config')
 const { charInfo } = require('../../data/charInfo')
+const charDict = require('../../data/charDict')
 
 const MODES = [
   { key: 'animate', name: '演示' },
@@ -126,16 +127,17 @@ Page({
   },
 
   updateInfo(char, data) {
-    const dict = charInfo[char] || {}
+    const d = charInfo[char] || {}
+    const x = charDict[char] || {}
     this.setData({
       info: {
-        pinyin: dict.pinyin || '—',
-        radical: dict.radical || '—',
-        structure: dict.structure || '—',
-        strokes: data && data.strokes ? data.strokes.length : '—',
-        words: dict.words || [],
-        wordsText: dict.words ? dict.words.join(' / ') : '—',
-        meaning: dict.meaning || '—'
+        pinyin: d.pinyin || x.pinyin || '—',
+        radical: d.radical || x.radical || '—',
+        structure: d.structure || x.structure || '—',
+        strokes: data && data.strokes ? data.strokes.length : x.strokes || '—',
+        words: d.words || [],
+        wordsText: d.words ? d.words.join(' / ') : '—',
+        meaning: d.meaning || x.meaning || '—'
       }
     })
   },
