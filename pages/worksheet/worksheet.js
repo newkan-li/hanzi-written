@@ -245,7 +245,6 @@ Page({
   drawHeader(ctx, W, H, title, subtitle) {
     ctx.fillStyle = '#fdfbf5'
     ctx.fillRect(0, 0, W, H)
-    this.drawWatermark(ctx, W, H)
     ctx.fillStyle = '#2b2b2b'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
@@ -258,31 +257,23 @@ Page({
     }
   },
 
-  drawWatermark(ctx, W, H) {
-    if (!this.data.watermark) return
-    const text = (this.data.footerText || '墨学').slice(0, 20)
-    ctx.save()
-    ctx.translate(W / 2, H / 2)
-    ctx.rotate(-Math.PI / 6)
-    ctx.fillStyle = 'rgba(178,58,51,0.07)'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.font = this.pxFont(Math.round(2.0 * CM), true)
-    for (let r = -1; r <= 1; r += 1) {
-      for (let c = -1; c <= 1; c += 1) {
-        ctx.fillText(text, c * W * 0.55, r * H * 0.34)
-      }
-    }
-    ctx.restore()
-  },
-
   drawFooter(ctx, W, H) {
+    const text = this.data.footerText
+    // 水印只放在页脚区域，不遮挡书写区
+    if (this.data.watermark) {
+      ctx.save()
+      ctx.fillStyle = 'rgba(178,58,51,0.10)'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.font = this.pxFont(Math.round(1.1 * CM), true)
+      ctx.fillText((text || '墨学').slice(0, 20), W / 2, H - Math.round(1.45 * CM))
+      ctx.restore()
+    }
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillStyle = this.data.footerText ? '#b23a33' : '#8a8578'
+    ctx.fillStyle = text ? '#b23a33' : '#8a8578'
     ctx.font = this.pxFont(Math.round(0.45 * CM), false)
-    const text = this.data.footerText || '墨学 · A4 打印请选「实际大小 / 100%」'
-    ctx.fillText(text, W / 2, H - Math.round(0.9 * CM))
+    ctx.fillText(text || '墨学 · A4 打印请选「实际大小 / 100%」', W / 2, H - Math.round(0.7 * CM))
   },
 
   drawChar(ctx, char, x, y, cell, color) {
