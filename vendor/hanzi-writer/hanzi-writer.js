@@ -2681,9 +2681,13 @@ module.exports = function (ctx, props) {
 
   // 变速变宽：慢则宽、快则窄；笔锋起收收细（铅笔较均匀）
   var ref = pen === 'brush' ? 26 : pen === 'pencil' ? 42 : 34;
-  var lo = pen === 'brush' ? 0.35 : 0.6;
+  var lo = pen === 'brush' ? 0.32 : 0.6;
   var hi = pen === 'brush' ? 1.9 : pen === 'pencil' ? 1.1 : 1.25;
   var n = pts.length;
+  var rnd = function (k) {
+    var x = Math.sin(k * 12.9898) * 43758.5453;
+    return x - Math.floor(x);
+  };
   for (var i = 1; i < n; i++) {
     var dx = pts[i].x - pts[i - 1].x;
     var dy = pts[i].y - pts[i - 1].y;
@@ -2696,11 +2700,42 @@ module.exports = function (ctx, props) {
       if (t < 0.15) taper = 0.55 + 0.45 * (t / 0.15);
       else if (t > 0.85) taper = 0.55 + 0.45 * ((1 - t) / 0.15);
     }
-    ctx.lineWidth = base * f * taper;
+    var w = base * f * taper;
+    var alpha = props.opacity;
+
+    if (pen === 'pencil') {
+      // 颗粒感：线宽与透明度轻微抖动
+      w *= 0.85 + 0.3 * rnd(i);
+      alpha *= 0.7 + 0.3 * rnd(i + 7);
+    } else if (pen === 'brush') {
+      // 飞白：速度越快（f 越小）越淡、越枯
+      var dry = f < 0.7 ? 0.5 + 0.5 * rnd(i) : 0.88 + 0.12 * rnd(i);
+      alpha *= dry;
+      w *= 0.85 + 0.3 * rnd(i + 3);
+    } else {
+      alpha *= 0.94 + 0.06 * rnd(i);
+    }
+
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = w;
     ctx.beginPath();
     ctx.moveTo(pts[i - 1].x, pts[i - 1].y);
     ctx.lineTo(pts[i].x, pts[i].y);
     ctx.stroke();
+  }
+
+  // 铅笔颗粒：沿笔画稀疏洒小点
+  if (pen === 'pencil') {
+    ctx.globalAlpha = props.opacity * 0.5;
+    for (var j = 1; j < n; j++) {
+      if (rnd(j * 2.3) > 0.62) {
+        var px = pts[j].x + (rnd(j * 5.1) - 0.5) * base;
+        var py = pts[j].y + (rnd(j * 7.7) - 0.5) * base;
+        ctx.beginPath();
+        ctx.arc(px, py, Math.max(0.6, base * 0.08), 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
   }
   ctx.restore();
 };
