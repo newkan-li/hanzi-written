@@ -1,5 +1,5 @@
 const pinyin = require('../../data/textbookPinyin')
-const config = require('../../utils/config')
+const tts = require('../../utils/tts')
 const storage = require('../../utils/storage')
 
 const POOL = Object.keys(pinyin)
@@ -100,15 +100,12 @@ Page({
 
   speak(char) {
     const c = char || this.data.char
-    if (!c || !config.tts || !config.tts.enabled || !config.tts.url) return
+    if (!c) return
     if (this._audio) {
       this._audio.destroy()
       this._audio = null
     }
-    const audio = wx.createInnerAudioContext()
-    audio.src = config.tts.url(c)
-    audio.play()
-    this._audio = audio
+    this._audio = tts.speak(c)
   },
 
   replay() {

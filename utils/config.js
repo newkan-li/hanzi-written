@@ -13,14 +13,18 @@ module.exports = {
   // 例：charDataCDN: 'https://your-bucket-1250000000.cos.ap-guangzhou.myqcloud.com/hanzi-data'
   charDataCDN: 'https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest',
 
-  // 朗读发音。false 时不请求任何外部 TTS（可用于合规/无网环境）。
-  // 正式上线建议替换为自有 TTS 服务或「微信同声传译」插件。
+  // 朗读发音。多音源自动降级（第 1 个失败自动试第 2 个）。
+  // false/空数组时不朗读。正式上线建议替换为自有 TTS 或「微信同声传译」插件，
+  // 并把所用域名加入 request 合法域名。
   tts: {
     enabled: true,
-    url: (text) =>
-      'https://fanyi.baidu.com/gettts?lan=zh&text=' +
-      encodeURIComponent(text) +
-      '&spd=5&source=web'
+    sources: [
+      (text) =>
+        'https://fanyi.baidu.com/gettts?lan=zh&text=' +
+        encodeURIComponent(text) +
+        '&spd=5&source=web',
+      (text) => 'https://dict.youdao.com/dictvoice?type=2&audio=' + encodeURIComponent(text)
+    ]
   },
 
   // 应用信息（关于页展示）

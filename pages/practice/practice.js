@@ -2,7 +2,7 @@ const createHanziWriterContext = require('../../vendor/hanzi-writer/index')
 
 const { loadCharData } = require('../../utils/charData')
 const storage = require('../../utils/storage')
-const config = require('../../utils/config')
+const tts = require('../../utils/tts')
 const { charInfo } = require('../../data/charInfo')
 const charDict = require('../../data/charDict')
 
@@ -332,17 +332,9 @@ Page({
       this._audio.destroy()
       this._audio = null
     }
-    if (!config.tts || !config.tts.enabled || !config.tts.url) {
-      wx.showToast({ title: '未配置朗读音源', icon: 'none' })
-      return
-    }
-    const audio = wx.createInnerAudioContext()
-    audio.src = config.tts.url(char)
-    audio.onError(() => {
-      wx.showToast({ title: '朗读失败，请在 config.js 配置音源', icon: 'none' })
+    this._audio = tts.speak(char, () => {
+      wx.showToast({ title: '朗读失败，可在 config 关闭或换源', icon: 'none' })
     })
-    audio.play()
-    this._audio = audio
   },
 
   makeWorksheet() {
