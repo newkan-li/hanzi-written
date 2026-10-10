@@ -65,7 +65,10 @@
     >{{item}}</view>
   </view>
   <view class="muted empty" wx:else>还没有收藏，去字库挑几个字吧</view>
-  <view class="btn ghost" wx:if="{{favorites.length}}" bindtap="onClearFavorites">清空收藏</view>
+  <view class="fav-actions" wx:if="{{favorites.length}}">
+    <view class="btn" bindtap="onPracticeFavorites">练习全部收藏</view>
+    <view class="btn ghost" bindtap="onClearFavorites">清空收藏</view>
+  </view>
 
   <view class="section-title">最近练习</view>
   <view class="records" wx:if="{{records.length}}">

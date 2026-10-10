@@ -36,6 +36,14 @@ Page({
     wx.navigateTo({ url: '/pages/practice/practice' })
   },
 
+  onPracticeFavorites() {
+    const chars = storage.getFavorites().slice()
+    if (!chars.length) return
+    getApp().globalData.practiceList = chars
+    getApp().globalData.practiceIndex = 0
+    wx.navigateTo({ url: '/pages/practice/practice' })
+  },
+
   onMakePoster() {
     const records = storage.getRecords()
     const char = (this.data.favorites[0] || (records[0] && records[0].char) || '永')

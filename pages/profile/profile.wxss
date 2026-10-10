@@ -123,6 +123,15 @@
   padding: 30rpx 0;
 }
 
+.fav-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+.fav-actions .btn {
+  flex: 1;
+}
+
 .btn.ghost {
   margin-top: 28rpx;
 }
