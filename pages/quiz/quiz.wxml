@@ -1,0 +1,52 @@
+<view class="page quiz">
+  <view class="bar">
+    <text class="muted">{{title}}</text>
+    <text class="muted">{{index + 1}} / {{total}}</text>
+  </view>
+
+  <block wx:if="{{question && !finished}}">
+    <view class="prompt card">
+      <view class="prompt-main {{question.optionIsChar ? 'pinyin' : 'char'}}">{{question.prompt}}</view>
+      <view class="muted tip">{{question.optionIsChar ? '选出对应的汉字' : '选出正确的读音'}}</view>
+    </view>
+
+    <view class="options">
+      <view
+        class="option {{question.optionIsChar ? 'big' : 'text'}} {{answered && item === question.answer ? 'right' : ''}} {{answered && item === picked && item !== question.answer ? 'wrong' : ''}}"
+        wx:for="{{question.options}}"
+        wx:key="*this"
+        data-value="{{item}}"
+        bindtap="onPick"
+      >{{item}}</view>
+    </view>
+
+    <view class="feedback" wx:if="{{answered}}">
+      <text class="{{correct ? 'ok' : 'no'}}">{{correct ? '答对了' : '正确答案：' + question.answer}}</text>
+    </view>
+
+    <view class="btn block" wx:if="{{answered}}" bindtap="next">
+      {{index + 1 >= total ? '看结果' : '下一题'}}
+    </view>
+  </block>
+
+  <view class="result card" wx:if="{{finished}}">
+    <view class="result-score">{{score}} / {{total}}</view>
+    <view class="muted">本次得分</view>
+
+    <block wx:if="{{wrong.length}}">
+      <view class="wrong-title">错题（{{wrong.length}}）</view>
+      <view class="wrong-list">
+        <view class="wrong-item" wx:for="{{wrong}}" wx:key="char">
+          <text class="wrong-char">{{item.char}}</text>
+          <text class="muted">{{item.pinyin}}</text>
+        </view>
+      </view>
+    </block>
+    <view class="muted" wx:else>全对，太棒了！</view>
+
+    <view class="result-actions">
+      <view class="btn" wx:if="{{wrong.length}}" bindtap="practiceWrong">练错题</view>
+      <view class="btn ghost" bindtap="exit">返回</view>
+    </view>
+  </view>
+</view>

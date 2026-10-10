@@ -8,6 +8,7 @@
     "pages/textbook/textbook",
     "pages/dictation/dictation",
     "pages/poem/poem",
+    "pages/quiz/quiz",
     "pages/weak/weak",
     "pages/worksheet/worksheet",
     "pages/poster/poster",

@@ -149,5 +149,36 @@ Page({
     app.globalData.dictationChars = chars
     app.globalData.dictationTitle = unit.title
     wx.navigateTo({ url: '/pages/dictation/dictation' })
+  },
+
+  quizUnit(e) {
+    const chars = this.unitChars(Number(e.currentTarget.dataset.index))
+    if (!chars.length) return
+    const app = getApp()
+    app.globalData.quizChars = chars
+    app.globalData.quizTitle = this.data.units[Number(e.currentTarget.dataset.index)].title
+    wx.navigateTo({ url: '/pages/quiz/quiz' })
+  },
+
+  quizBook() {
+    const chars = this.bookChars()
+    if (!chars.length) return
+    const app = getApp()
+    app.globalData.quizChars = chars
+    app.globalData.quizTitle = this.data.book.name
+    wx.navigateTo({ url: '/pages/quiz/quiz' })
+  },
+
+  unitChars(idx) {
+    const unit = this.data.units[idx]
+    if (!unit) return []
+    const set = new Set()
+    unit.lessons.forEach((l) => {
+      const L = data.lessons[l.id]
+      if (!L) return
+      ;(L.shizi || []).forEach((c) => set.add(c))
+      ;(L.xiezi || []).forEach((c) => set.add(c))
+    })
+    return Array.from(set)
   }
 })

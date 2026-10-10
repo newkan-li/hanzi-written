@@ -20,7 +20,9 @@
 .book-meta {
   margin-bottom: 20rpx;
 }
-.bookdict {
+.book-actions {
+  display: flex;
+  gap: 20rpx;
   margin-bottom: 20rpx;
 }
 
@@ -58,11 +60,14 @@
   font-size: 22rpx;
   font-weight: 400;
 }
-.unit-dict {
+.unit-actions {
   float: right;
+  font-weight: 400;
+}
+.unit-act {
   color: #b23a33;
   font-size: 24rpx;
-  font-weight: 400;
+  margin-left: 20rpx;
 }
 .lessons {
   display: flex;

@@ -12,7 +12,10 @@
   <view class="book-meta muted" wx:if="{{book}}">
     {{book.name}} · 识字表 {{book.shiziCount}} · 写字表 {{book.xieziCount}}
   </view>
-  <view class="btn ghost block bookdict" wx:if="{{book}}" bindtap="dictationBook">听写本册</view>
+  <view class="book-actions" wx:if="{{book}}">
+    <view class="btn ghost" bindtap="dictationBook">听写本册</view>
+    <view class="btn ghost" bindtap="quizBook">测试本册</view>
+  </view>
 
   <view class="tabs">
     <view class="tab {{mode === 'shizi' ? 'active' : ''}}" data-mode="shizi" bindtap="pickMode">识字表</view>
@@ -21,8 +24,13 @@
 
   <view class="units">
     <view class="unit" wx:for="{{units}}" wx:for-item="u" wx:key="title">
-      <view class="unit-title">{{u.title}}<text class="unit-theme">{{u.theme}}</text>
-        <text class="unit-dict" data-index="{{index}}" catchtap="dictationUnit">听写本单元</text>
+      <view class="unit-title">
+        <text>{{u.title}}</text>
+        <text class="unit-theme">{{u.theme}}</text>
+        <view class="unit-actions">
+          <text class="unit-act" data-index="{{index}}" catchtap="dictationUnit">听写</text>
+          <text class="unit-act" data-index="{{index}}" catchtap="quizUnit">测试</text>
+        </view>
       </view>
       <view class="lessons">
         <view
