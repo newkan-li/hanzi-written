@@ -269,6 +269,10 @@ Page({
     wx.showToast({ title: '写好了！', icon: 'success' })
   },
 
+  retry() {
+    this.createWriter()
+  },
+
   switchMode(e) {
     const mode = e.currentTarget.dataset.mode
     if (mode === this.data.mode) return

@@ -9,7 +9,10 @@
   <view class="stage card {{gridStyle === 'none' ? '' : 'with-grid grid-' + gridStyle}}">
     <hanzi-writer-view id="hz-writer" width="{{size}}" height="{{size}}" />
     <view class="loading" wx:if="{{loading}}">字库加载中…</view>
-    <view class="error" wx:if="{{error}}">{{error}}</view>
+    <view class="error" wx:if="{{error}}">
+      <view>{{error}}</view>
+      <view class="error-retry" bindtap="retry">重试</view>
+    </view>
   </view>
 
   <view class="note card" wx:if="{{note}}">

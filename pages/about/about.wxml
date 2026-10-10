@@ -26,6 +26,12 @@
     <view class="item">朗读发音使用公开 TTS 接口，或由开发者自行配置。</view>
   </view>
 
+  <view class="section-title">排查</view>
+  <view class="card">
+    <view class="item">练字看不到字？先检测字库是否连通。</view>
+    <view class="btn block test-btn" bindtap="testCharData">{{testing ? '检测中…' : '字库连通性自检'}}</view>
+  </view>
+
   <view class="section-title">联系与反馈</view>
   <view class="card" bindtap="copyContact">
     <view class="item">邮箱：your-email@example.com（点按复制）</view>

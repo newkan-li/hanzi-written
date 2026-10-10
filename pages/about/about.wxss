@@ -25,3 +25,7 @@
   text-align: center;
   margin: 40rpx 0;
 }
+
+.test-btn {
+  margin-top: 20rpx;
+}
