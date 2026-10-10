@@ -55,3 +55,26 @@
   left: 50%;
   width: 1rpx;
 }
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32rpx;
+  margin: 48rpx 0 20rpx;
+}
+.pg {
+  padding: 16rpx 44rpx;
+  border-radius: 40rpx;
+  background-color: #b23a33;
+  color: #fff;
+  font-size: 28rpx;
+}
+.pg.disabled {
+  background-color: #e7e0d0;
+  color: #b7b0a2;
+}
+.pg-info {
+  color: #8a8578;
+  font-size: 28rpx;
+}
