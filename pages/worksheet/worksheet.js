@@ -26,10 +26,9 @@ const ORIENTATIONS = [
   { key: 'landscape', name: 'A4 横向' }
 ]
 
-// 打印尺寸（300dpi，按真实厘米排版）
-const CM = 300 / 2.54 // 118.11 px/cm
-const A4_W = Math.round(21.0 * CM) // 2480
-const A4_H = Math.round(29.7 * CM) // 3508
+const CM = 300 / 2.54
+const A4_W = Math.round(21.0 * CM)
+const A4_H = Math.round(29.7 * CM)
 const SIDE = Math.round(1.0 * CM)
 const HEADER = Math.round(2.6 * CM)
 const FOOTER = Math.round(1.8 * CM)
@@ -79,6 +78,8 @@ Page({
     qrOn: false,
     chars: [],
     preview: '',
+    previews: [],
+    pageCount: 0,
     generated: false,
     canvasW: 0,
     canvasH: 0
@@ -104,14 +105,14 @@ Page({
   },
 
   onUnload() {
-    if (this.data.preview) {
-      const fs = wx.getFileSystemManager()
+    const fs = wx.getFileSystemManager()
+    ;(this.data.previews || []).forEach((p) => {
       try {
-        fs.unlink({ filePath: this.data.preview })
+        fs.unlink({ filePath: p })
       } catch (e) {
         /* 忽略 */
       }
-    }
+    })
   },
 
   pickSource(e) {
@@ -210,51 +211,49 @@ Page({
       : { W: A4_W, H: A4_H }
   },
 
-  generate() {
+  async generate() {
     const { layout, poem } = this.data
+    let pages
     if (layout === 'poem' && poem && poem.lines.length) {
-      this.generatePoem()
+      pages = this.buildPoemPages()
     } else {
-      this.generateGrid()
+      pages = this.buildGridPages()
     }
-  },
-
-  buildCanvas(W, H, drawFn) {
-    const win = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
-    const maxW = (win.windowWidth || 375) - 40
-    const scale = Math.min(1, maxW / W)
-    this.setData(
-      { canvasW: Math.floor(W * scale), canvasH: Math.floor(H * scale) },
-      () => {
-        wx.createSelectorQuery()
-          .select('#worksheet-canvas')
-          .fields({ node: true, size: true })
-          .exec((res) => {
-            const info = res && res[0]
-            if (!info || !info.node) {
-              wx.showToast({ title: '画布初始化失败', icon: 'none' })
-              return
-            }
-            const node = info.node
-            node.width = W
-            node.height = H
-            const ctx = node.getContext('2d')
-            drawFn(ctx)
-            this.canvasNode = node
-            this.exportPreview()
-          })
-      }
-    )
-  },
-
-  generateGrid() {
-    const { chars } = this.data
-    if (!chars.length) {
-      wx.showToast({ title: '没有可生成的字', icon: 'none' })
+    if (!pages || !pages.length) {
+      wx.showToast({ title: '没有可生成的内容', icon: 'none' })
       return
     }
+    wx.showLoading({ title: '生成中…' })
+    const { W, H } = this.pageSize()
+    try {
+      await this.ensureCanvas(W, H)
+      const previews = []
+      for (let i = 0; i < pages.length; i += 1) {
+        const path = await this.drawAndExport(pages[i], i + 1, pages.length)
+        if (path) previews.push(path)
+      }
+      this.setData({
+        previews,
+        preview: previews[0] || '',
+        pageCount: previews.length,
+        generated: previews.length > 0,
+        canvasW: 1,
+        canvasH: 1
+      })
+      if (previews.length > 1) {
+        wx.showToast({ title: '已生成 ' + previews.length + ' 页', icon: 'none' })
+      }
+    } catch (e) {
+      wx.showToast({ title: '生成失败', icon: 'none' })
+    } finally {
+      wx.hideLoading()
+    }
+  },
+
+  buildGridPages() {
+    const { chars } = this.data
+    if (!chars.length) return null
     const repeat = Math.max(1, this.data.repeat || 1)
-    // 默认每个字只出现一次（范字）；选了“重复遍数”才连排多次（首个为范字，其余描红）
     const seq = []
     const first = []
     chars.forEach((ch) => {
@@ -268,28 +267,93 @@ Page({
     const cols = Math.max(1, Math.floor((W - 2 * SIDE) / cell))
     const rows = Math.max(1, Math.floor((H - HEADER - FOOTER) / cell))
     const startX = Math.round((W - cols * cell) / 2)
-    this.buildCanvas(W, H, (ctx) =>
-      this.drawGridSheet(ctx, seq, first, cols, rows, cell, startX, W, H)
-    )
+    const cap = cols * rows
+    const pageCount = Math.max(1, Math.ceil(seq.length / cap))
+    const pages = []
+    for (let p = 0; p < pageCount; p += 1) {
+      const s = seq.slice(p * cap, (p + 1) * cap)
+      const f = first.slice(p * cap, (p + 1) * cap)
+      pages.push((ctx, label) => this.drawGridPage(ctx, s, f, cols, cell, startX, W, H, label))
+    }
+    return pages
   },
 
-  generatePoem() {
+  buildPoemPages() {
     const raw = (this.data.poem.lines || []).slice()
     const items = raw.map((l) => ({ chars: cnChars(l) }))
-    if (!items.filter((it) => it.chars.length).length) {
-      wx.showToast({ title: '没有可生成的诗句', icon: 'none' })
-      return
-    }
+    if (!items.filter((it) => it.chars.length).length) return null
     const { W, H } = this.pageSize()
     const blockRows = 1 + this.data.traceRows
     const gapUnits = 0.7
     const maxLen = Math.max.apply(null, items.map((it) => it.chars.length))
+    const availH = H - HEADER - FOOTER
     const totalUnits = items.reduce((s, it) => s + (it.chars.length ? blockRows : gapUnits), 0)
     let cell = Math.round(Number(this.data.cellCm) * CM)
-    const cellByW = Math.floor((W - 2 * SIDE) / Math.max(1, maxLen))
-    const cellByH = Math.floor((H - HEADER - FOOTER) / totalUnits)
-    cell = Math.min(cell, cellByW, cellByH)
-    this.buildCanvas(W, H, (ctx) => this.drawPoemSheet(ctx, items, cell, blockRows, gapUnits, W, H))
+    cell = Math.min(cell, Math.floor((W - 2 * SIDE) / Math.max(1, maxLen)), Math.floor(availH / totalUnits))
+    // 按可用高度分页
+    const pagesItems = []
+    let cur = []
+    let curH = 0
+    items.forEach((it) => {
+      const h = it.chars.length ? blockRows * cell + LINE_GAP : gapUnits * cell
+      if (cur.length && curH + h > availH) {
+        pagesItems.push(cur)
+        cur = []
+        curH = 0
+      }
+      cur.push(it)
+      curH += h
+    })
+    if (cur.length) pagesItems.push(cur)
+    return pagesItems.map((its) => (ctx, label) =>
+      this.drawPoemPage(ctx, its, cell, blockRows, gapUnits, W, H, label)
+    )
+  },
+
+  ensureCanvas(W, H) {
+    return new Promise((resolve, reject) => {
+      const win = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
+      const maxW = (win.windowWidth || 375) - 40
+      const scale = Math.min(1, maxW / W)
+      this.setData(
+        { canvasW: Math.floor(W * scale), canvasH: Math.floor(H * scale) },
+        () => {
+          wx.createSelectorQuery()
+            .select('#worksheet-canvas')
+            .fields({ node: true })
+            .exec((res) => {
+              const info = res && res[0]
+              if (!info || !info.node) {
+                reject(new Error('no canvas'))
+                return
+              }
+              const node = info.node
+              if (node.width !== W || node.height !== H) {
+                node.width = W
+                node.height = H
+              }
+              this.canvasNode = node
+              this.ctx = node.getContext('2d')
+              resolve()
+            })
+        }
+      )
+    })
+  },
+
+  drawAndExport(drawFn, pageNo, total) {
+    return new Promise((resolve) => {
+      const ctx = this.ctx
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
+      const label = total > 1 ? { page: pageNo, total } : null
+      drawFn(ctx, label)
+      wx.canvasToTempFilePath({
+        canvas: this.canvasNode,
+        fileType: 'png',
+        success: (res) => resolve(res.tempFilePath),
+        fail: () => resolve('')
+      })
+    })
   },
 
   pxFont(px, serif) {
@@ -311,6 +375,44 @@ Page({
       ctx.fillStyle = '#8a8578'
       ctx.font = this.pxFont(Math.round(0.5 * CM), false)
       ctx.fillText(sub, W / 2, Math.round(2.1 * CM))
+    }
+  },
+
+  drawFooter(ctx, W, H, label) {
+    const text = this.data.footerText
+    if (this.data.watermark) {
+      ctx.save()
+      ctx.fillStyle = 'rgba(0,0,0,0.13)'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.font = this.pxFont(Math.round(1.1 * CM), true)
+      ctx.fillText((text || '墨学').slice(0, 20), W / 2, H - Math.round(1.45 * CM))
+      ctx.restore()
+    }
+    if (label) {
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = '#b7b0a2'
+      ctx.font = this.pxFont(Math.round(0.4 * CM), false)
+      ctx.fillText('第 ' + label.page + ' / ' + label.total + ' 页', W / 2, H - Math.round(0.35 * CM))
+    }
+
+    let qrDrawn = false
+    if (this.data.qrOn) {
+      const qrSize = Math.round(1.6 * CM)
+      qrDrawn = this.drawQR(ctx, W - SIDE - qrSize, H - Math.round(0.5 * CM) - qrSize, qrSize, text)
+    }
+
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = text ? '#b23a33' : '#8a8578'
+    ctx.font = this.pxFont(Math.round(0.45 * CM), false)
+    const lbl = text || '墨学 · A4 打印请选「实际大小 / 100%」'
+    if (qrDrawn) {
+      ctx.textAlign = 'left'
+      ctx.fillText(lbl, SIDE, H - Math.round(1.1 * CM))
+    } else {
+      ctx.textAlign = 'center'
+      ctx.fillText(lbl, W / 2, H - Math.round(1.1 * CM))
     }
   },
 
@@ -337,39 +439,6 @@ Page({
     return true
   },
 
-  drawFooter(ctx, W, H) {
-    const text = this.data.footerText
-    // 水印只放在页脚区域，不遮挡书写区
-    if (this.data.watermark) {
-      ctx.save()
-      ctx.fillStyle = 'rgba(0,0,0,0.13)'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.font = this.pxFont(Math.round(1.1 * CM), true)
-      ctx.fillText((text || '墨学').slice(0, 20), W / 2, H - Math.round(1.45 * CM))
-      ctx.restore()
-    }
-
-    // 页脚二维码（放老师/机构链接或版权文字）
-    let qrDrawn = false
-    if (this.data.qrOn) {
-      const qrSize = Math.round(1.6 * CM)
-      qrDrawn = this.drawQR(ctx, W - SIDE - qrSize, H - Math.round(0.12 * CM) - qrSize, qrSize, text)
-    }
-
-    ctx.textBaseline = 'middle'
-    ctx.fillStyle = text ? '#b23a33' : '#8a8578'
-    ctx.font = this.pxFont(Math.round(0.45 * CM), false)
-    const label = text || '墨学 · A4 打印请选「实际大小 / 100%」'
-    if (qrDrawn) {
-      ctx.textAlign = 'left'
-      ctx.fillText(label, SIDE, H - Math.round(0.9 * CM))
-    } else {
-      ctx.textAlign = 'center'
-      ctx.fillText(label, W / 2, H - Math.round(0.9 * CM))
-    }
-  },
-
   drawChar(ctx, char, x, y, cell, color) {
     ctx.fillStyle = color
     ctx.textAlign = 'center'
@@ -378,11 +447,10 @@ Page({
     ctx.fillText(char, x + cell / 2, y + cell / 2)
   },
 
-  drawGridSheet(ctx, seq, first, cols, rows, cell, startX, W, H) {
+  drawGridPage(ctx, seq, first, cols, cell, startX, W, H, label) {
     const gridStyle = this.data.gridStyle
     this.drawHeader(ctx, W, H, '汉字练习字帖', '')
-    const total = rows * cols
-    for (let k = 0; k < total && k < seq.length; k += 1) {
+    for (let k = 0; k < seq.length; k += 1) {
       const r = Math.floor(k / cols)
       const c = k % cols
       const x = startX + c * cell
@@ -390,10 +458,10 @@ Page({
       this.drawGrid(ctx, x, y, cell, gridStyle)
       this.drawChar(ctx, seq[k], x, y, cell, first[k] ? '#2b2b2b' : '#cfc7b4')
     }
-    this.drawFooter(ctx, W, H)
+    this.drawFooter(ctx, W, H, label)
   },
 
-  drawPoemSheet(ctx, items, cell, blockRows, gapUnits, W, H) {
+  drawPoemPage(ctx, items, cell, blockRows, gapUnits, W, H, label) {
     const poem = this.data.poem
     const gridStyle = this.data.gridStyle
     const cols = Math.max.apply(null, items.map((it) => it.chars.length))
@@ -406,7 +474,6 @@ Page({
     let y = HEADER + Math.max(0, Math.floor((H - HEADER - FOOTER - totalH) / 2))
     const sub = [poem.dynasty, poem.author].filter(Boolean).join(' · ')
     this.drawHeader(ctx, W, H, poem.title || '古诗字帖', sub)
-
     items.forEach((it) => {
       if (!it.chars.length) {
         y += gapUnits * cell
@@ -424,7 +491,7 @@ Page({
       }
       y += blockRows * cell + LINE_GAP
     })
-    this.drawFooter(ctx, W, H)
+    this.drawFooter(ctx, W, H, label)
   },
 
   drawGrid(ctx, x, y, size, style) {
@@ -433,7 +500,6 @@ Page({
     ctx.save()
     ctx.lineWidth = 2
     ctx.strokeStyle = gridColor
-
     if (style === 'hline') {
       ctx.beginPath()
       ctx.moveTo(x, y + size / 2)
@@ -450,9 +516,7 @@ Page({
       ctx.restore()
       return
     }
-
     ctx.strokeRect(x + 1, y + 1, size - 2, size - 2)
-
     ctx.strokeStyle = subColor
     ctx.beginPath()
     ctx.moveTo(x + size / 2, y)
@@ -460,7 +524,6 @@ Page({
     ctx.moveTo(x, y + size / 2)
     ctx.lineTo(x + size, y + size / 2)
     ctx.stroke()
-
     if (style === 'mi') {
       ctx.beginPath()
       ctx.moveTo(x, y)
@@ -475,42 +538,46 @@ Page({
     ctx.restore()
   },
 
-  exportPreview() {
-    wx.canvasToTempFilePath({
-      canvas: this.canvasNode,
-      fileType: 'png',
-      success: (res) => {
-        this.setData({ preview: res.tempFilePath, generated: true })
-      },
-      fail: () => {
-        wx.showToast({ title: '生成失败', icon: 'none' })
-      }
-    })
+  previewImage(e) {
+    const cur = e.currentTarget.dataset.path
+    wx.previewImage({ urls: this.data.previews, current: cur })
   },
 
   saveToAlbum() {
-    if (!this.data.preview) {
+    const previews = this.data.previews
+    if (!previews.length) {
       wx.showToast({ title: '请先生成', icon: 'none' })
       return
     }
-    wx.saveImageToPhotosAlbum({
-      filePath: this.data.preview,
-      success: () => wx.showToast({ title: '已保存到相册' }),
-      fail: (err) => {
-        if (err && err.errMsg && err.errMsg.indexOf('auth') > -1) {
-          wx.showModal({
-            title: '需要相册权限',
-            content: '请在设置中允许保存到相册',
-            confirmText: '去设置',
-            success: (r) => {
-              if (r.confirm) wx.openSetting()
-            }
-          })
-        } else {
-          wx.showToast({ title: '保存失败', icon: 'none' })
-        }
+    let i = 0
+    const saveNext = () => {
+      if (i >= previews.length) {
+        wx.showToast({ title: '已保存 ' + previews.length + ' 张到相册' })
+        return
       }
-    })
+      wx.saveImageToPhotosAlbum({
+        filePath: previews[i],
+        success: () => {
+          i += 1
+          saveNext()
+        },
+        fail: (err) => {
+          if (err && err.errMsg && err.errMsg.indexOf('auth') > -1) {
+            wx.showModal({
+              title: '需要相册权限',
+              content: '请在设置中允许保存到相册',
+              confirmText: '去设置',
+              success: (r) => {
+                if (r.confirm) wx.openSetting()
+              }
+            })
+          } else {
+            wx.showToast({ title: '保存失败', icon: 'none' })
+          }
+        }
+      })
+    }
+    saveNext()
   },
 
   shareImage() {

@@ -156,8 +156,21 @@
     style="width: {{canvasW}}px; height: {{canvasH}}px;"
   ></canvas>
 
+  <view class="previews" wx:if="{{generated}}">
+    <view class="muted page-count" wx:if="{{pageCount > 1}}">共 {{pageCount}} 页（点图可放大）</view>
+    <image
+      class="preview-img"
+      wx:for="{{previews}}"
+      wx:key="*this"
+      src="{{item}}"
+      mode="widthFix"
+      data-path="{{item}}"
+      bindtap="previewImage"
+    />
+  </view>
+
   <view class="preview-actions" wx:if="{{generated}}">
-    <view class="btn ghost" bindtap="saveToAlbum">保存到相册</view>
-    <view class="btn ghost" bindtap="shareImage">分享图片</view>
+    <view class="btn ghost" bindtap="saveToAlbum">保存全部</view>
+    <view class="btn ghost" bindtap="shareImage">分享首页</view>
   </view>
 </view>
