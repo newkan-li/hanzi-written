@@ -19,10 +19,10 @@
       id="scribe-canvas"
       class="scribe-canvas"
       style="width: {{size}}px; height: {{size}}px;"
-      bindtouchstart="onStart"
-      bindtouchmove="onMove"
-      bindtouchend="onEnd"
-      bindtouchcancel="onEnd"
+      catchtouchstart="onStart"
+      catchtouchmove="onMove"
+      catchtouchend="onEnd"
+      catchtouchcancel="onEnd"
     ></canvas>
   </view>
 
