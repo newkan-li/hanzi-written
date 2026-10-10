@@ -76,6 +76,7 @@ Page({
     watermark: false,
     headerTitle: '',
     showDate: true,
+    qrOn: false,
     chars: [],
     preview: '',
     generated: false,
@@ -93,7 +94,8 @@ Page({
       footerText: storage.getPref('worksheetFooter', ''),
       watermark: storage.getPref('worksheetMark', false),
       headerTitle: storage.getPref('worksheetTitle', ''),
-      showDate: storage.getPref('worksheetDate', true)
+      showDate: storage.getPref('worksheetDate', true),
+      qrOn: storage.getPref('worksheetQR', false)
     })
     if (poem && poem.lines && poem.lines.length) {
       this.setData({ poem, layout: 'poem' })
@@ -170,6 +172,12 @@ Page({
     const watermark = !this.data.watermark
     this.setData({ watermark })
     storage.setPref('worksheetMark', watermark)
+  },
+
+  toggleQR() {
+    const qrOn = !this.data.qrOn
+    this.setData({ qrOn })
+    storage.setPref('worksheetQR', qrOn)
   },
 
   resolveChars() {
@@ -300,6 +308,29 @@ Page({
     }
   },
 
+  drawQR(ctx, x, y, size, text) {
+    let qr
+    try {
+      const qrcode = require('../../vendor/qrcode/qrcode')
+      qr = qrcode(0, 'M')
+      qr.addData(text || '墨学')
+      qr.make()
+    } catch (e) {
+      return false
+    }
+    const n = qr.getModuleCount()
+    const cell = size / n
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(x, y, size, size)
+    ctx.fillStyle = '#000000'
+    for (let r = 0; r < n; r += 1) {
+      for (let c = 0; c < n; c += 1) {
+        if (qr.isDark(r, c)) ctx.fillRect(x + c * cell, y + r * cell, cell + 0.6, cell + 0.6)
+      }
+    }
+    return true
+  },
+
   drawFooter(ctx, W, H) {
     const text = this.data.footerText
     // 水印只放在页脚区域，不遮挡书写区
@@ -312,11 +343,25 @@ Page({
       ctx.fillText((text || '墨学').slice(0, 20), W / 2, H - Math.round(1.45 * CM))
       ctx.restore()
     }
-    ctx.textAlign = 'center'
+
+    // 页脚二维码（放老师/机构链接或版权文字）
+    let qrDrawn = false
+    if (this.data.qrOn) {
+      const qrSize = Math.round(1.6 * CM)
+      qrDrawn = this.drawQR(ctx, W - SIDE - qrSize, H - Math.round(0.12 * CM) - qrSize, qrSize, text)
+    }
+
     ctx.textBaseline = 'middle'
     ctx.fillStyle = text ? '#b23a33' : '#8a8578'
     ctx.font = this.pxFont(Math.round(0.45 * CM), false)
-    ctx.fillText(text || '墨学 · A4 打印请选「实际大小 / 100%」', W / 2, H - Math.round(0.7 * CM))
+    const label = text || '墨学 · A4 打印请选「实际大小 / 100%」'
+    if (qrDrawn) {
+      ctx.textAlign = 'left'
+      ctx.fillText(label, SIDE, H - Math.round(0.9 * CM))
+    } else {
+      ctx.textAlign = 'center'
+      ctx.fillText(label, W / 2, H - Math.round(0.9 * CM))
+    }
   },
 
   drawChar(ctx, char, x, y, cell, color) {

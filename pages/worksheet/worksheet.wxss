@@ -109,3 +109,9 @@
   border-radius: 16rpx;
   font-size: 28rpx;
 }
+
+.qr-hint {
+  font-size: 22rpx;
+  align-self: center;
+  margin-left: 8rpx;
+}

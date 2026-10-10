@@ -137,6 +137,13 @@
       <view class="chip sm {{watermark ? 'active' : ''}}" bindtap="toggleWatermark">{{watermark ? '开' : '关'}}</view>
     </view>
   </view>
+  <view class="opt-row">
+    <text class="opt-label">二维码</text>
+    <view class="chips">
+      <view class="chip sm {{qrOn ? 'active' : ''}}" bindtap="toggleQR">{{qrOn ? '开' : '关'}}</view>
+      <text class="muted qr-hint">码内容＝署名文字（可填链接）</text>
+    </view>
+  </view>
 
   <view class="muted count">A4（300dpi）· 共 {{chars.length}} 个不重复汉字 · 打印选「实际大小」</view>
 
