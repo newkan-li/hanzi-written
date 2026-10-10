@@ -12,6 +12,23 @@
     <view class="muted total">累计打卡 {{checkin.totalDays}} 天</view>
   </view>
 
+  <view class="remind card">
+    <view class="remind-row">
+      <view>
+        <view class="remind-title">打卡提醒</view>
+        <view class="muted">{{remindOn ? '已开启 · 每天 ' + remindTime : '开启后每天提醒练字'}}</view>
+      </view>
+      <switch checked="{{remindOn}}" color="#b23a33" bindchange="toggleRemind" />
+    </view>
+    <view class="remind-row" wx:if="{{remindOn}}">
+      <text class="muted">提醒时间</text>
+      <picker mode="time" value="{{remindTime}}" bindchange="onRemindTime">
+        <view class="time-val">{{remindTime}}</view>
+      </picker>
+    </view>
+    <view class="muted remind-note" wx:if="{{!tmplReady}}">提醒需在 config 配置订阅模板，并由服务端定时发送</view>
+  </view>
+
   <view class="stats card">
     <view class="stat">
       <view class="stat-num">{{stats.charCount}}</view>

@@ -27,5 +27,12 @@ module.exports = {
   app: {
     name: '墨学',
     version: '0.1.0'
+  },
+
+  // 订阅消息（打卡提醒）
+  // 在公众平台「订阅消息」申请模板后，把模板ID填到这里；推送需服务端定时发送（见 docs/上线指引.md）。
+  subscribe: {
+    enabled: false,
+    tmplId: ''
   }
 }

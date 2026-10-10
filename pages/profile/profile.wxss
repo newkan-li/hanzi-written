@@ -33,6 +33,31 @@
   margin-top: 6rpx;
 }
 
+.remind {
+  margin-top: 24rpx;
+}
+.remind-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 0;
+}
+.remind-title {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+.time-val {
+  padding: 8rpx 26rpx;
+  border-radius: 30rpx;
+  border: 1rpx solid #d8cfb8;
+  color: #b23a33;
+  font-size: 28rpx;
+}
+.remind-note {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+}
+
 .stats {
   display: flex;
   justify-content: space-around;
