@@ -157,12 +157,20 @@ Page({
     wx.navigateTo({ url: '/pages/poem/poem' })
   },
 
-  shuffleLesson() {
+  nextLesson() {
+    this.stepLesson(1)
+  },
+
+  prevLesson() {
+    this.stepLesson(-1)
+  },
+
+  stepLesson(delta) {
     const ids = allLessonIds()
     if (!ids.length) return
     const cur = this.data.dailyLesson && this.data.dailyLesson.id
     let idx = ids.indexOf(cur)
-    idx = idx < 0 ? 0 : (idx + 1) % ids.length
+    idx = idx < 0 ? 0 : (idx + delta + ids.length) % ids.length
     const lesson = buildLesson(ids[idx])
     if (lesson) {
       storage.setPref('homeLesson', ids[idx])
@@ -170,11 +178,19 @@ Page({
     }
   },
 
-  shufflePoem() {
+  nextPoem() {
+    this.stepPoem(1)
+  },
+
+  prevPoem() {
+    this.stepPoem(-1)
+  },
+
+  stepPoem(delta) {
     if (!poems.length) return
     const cur = this.data.todayPoem && this.data.todayPoem.id
     let idx = poems.findIndex((p) => p.id === cur)
-    idx = idx < 0 ? 0 : (idx + 1) % poems.length
+    idx = idx < 0 ? 0 : (idx + delta + poems.length) % poems.length
     const poem = poems[idx]
     if (poem) {
       storage.setPref('homePoem', poem.id)
