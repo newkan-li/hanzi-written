@@ -20,6 +20,9 @@
 .book-meta {
   margin-bottom: 20rpx;
 }
+.bookdict {
+  margin-bottom: 20rpx;
+}
 
 .tabs {
   display: flex;

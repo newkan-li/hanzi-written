@@ -1,0 +1,39 @@
+<view class="page dic">
+  <view class="bar">
+    <text class="muted">{{title}}</text>
+    <text class="muted">{{index + 1}} / {{total}}</text>
+  </view>
+
+  <block wx:if="{{!finished}}">
+    <view class="prompt card">
+      <view class="pinyin">{{pinyinText}}</view>
+      <view class="btn ghost small" bindtap="replay">朗读</view>
+      <view class="muted tip">选出对应的汉字</view>
+    </view>
+
+    <view class="options">
+      <view
+        class="option {{answered && item === char ? 'right' : ''}} {{answered && item === picked && picked !== char ? 'wrong' : ''}}"
+        wx:for="{{options}}"
+        wx:key="*this"
+        data-char="{{item}}"
+        bindtap="onPick"
+      >{{item}}</view>
+    </view>
+
+    <view class="feedback" wx:if="{{answered}}">
+      <text class="{{correct ? 'ok' : 'no'}}">{{correct ? '答对了' : '正确答案：' + char}}</text>
+    </view>
+
+    <view class="btn block" wx:if="{{answered}}" bindtap="next">下一题</view>
+  </block>
+
+  <view class="result card" wx:if="{{finished}}">
+    <view class="result-score">{{score}} / {{total}}</view>
+    <view class="muted">本轮答对题数</view>
+    <view class="result-actions">
+      <view class="btn" bindtap="restart">再来一轮</view>
+      <view class="btn ghost" bindtap="exit">返回</view>
+    </view>
+  </view>
+</view>

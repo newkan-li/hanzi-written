@@ -16,7 +16,7 @@
     {
       "root": "packages/textbook",
       "name": "textbook",
-      "pages": ["pages/textbook/textbook"]
+      "pages": ["pages/textbook/textbook", "pages/dictation/dictation"]
     }
   ],
   "preloadRule": {

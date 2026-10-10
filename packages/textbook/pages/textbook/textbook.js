@@ -96,5 +96,37 @@ Page({
     if (!chars.length) return
     getApp().globalData.worksheetList = chars
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
+  },
+
+  bookChars() {
+    const src = data.books.find((b) => b.id === this.data.currentBookId)
+    if (!src) return []
+    const set = new Set()
+    src.units.forEach((u) =>
+      u.lessons.forEach((lid) => {
+        const L = data.lessons[lid]
+        ;(L.shizi || []).forEach((c) => set.add(c))
+        ;(L.xiezi || []).forEach((c) => set.add(c))
+      })
+    )
+    return Array.from(set)
+  },
+
+  dictationLesson() {
+    const chars = this.lessonChars()
+    if (!chars.length) return
+    const app = getApp()
+    app.globalData.dictationChars = chars
+    app.globalData.dictationTitle = this.data.currentLesson.title
+    wx.navigateTo({ url: '/packages/textbook/pages/dictation/dictation' })
+  },
+
+  dictationBook() {
+    const chars = this.bookChars()
+    if (!chars.length) return
+    const app = getApp()
+    app.globalData.dictationChars = chars
+    app.globalData.dictationTitle = this.data.book.name
+    wx.navigateTo({ url: '/packages/textbook/pages/dictation/dictation' })
   }
 })
