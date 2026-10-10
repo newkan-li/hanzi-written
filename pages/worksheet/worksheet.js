@@ -64,6 +64,8 @@ Page({
     cellCm: '1.5',
     traceOptions: TRACE_OPTIONS,
     traceRows: 1,
+    footerText: '',
+    watermark: false,
     chars: [],
     preview: '',
     generated: false,
@@ -77,6 +79,10 @@ Page({
     if (list && list.length) this.currentList = list
     const poem = app.globalData.worksheetPoem
     app.globalData.worksheetPoem = null
+    this.setData({
+      footerText: storage.getPref('worksheetFooter', ''),
+      watermark: storage.getPref('worksheetMark', false)
+    })
     if (poem && poem.lines && poem.lines.length) {
       this.setData({ poem, layout: 'poem' })
     }
@@ -124,6 +130,18 @@ Page({
 
   onCustom(e) {
     this.setData({ customText: e.detail.value })
+  },
+
+  onFooterInput(e) {
+    const footerText = e.detail.value
+    this.setData({ footerText })
+    storage.setPref('worksheetFooter', footerText)
+  },
+
+  toggleWatermark() {
+    const watermark = !this.data.watermark
+    this.setData({ watermark })
+    storage.setPref('worksheetMark', watermark)
   },
 
   resolveChars() {
@@ -227,6 +245,7 @@ Page({
   drawHeader(ctx, W, H, title, subtitle) {
     ctx.fillStyle = '#fdfbf5'
     ctx.fillRect(0, 0, W, H)
+    this.drawWatermark(ctx, W, H)
     ctx.fillStyle = '#2b2b2b'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
@@ -239,12 +258,31 @@ Page({
     }
   },
 
-  drawFooter(ctx, W, H) {
-    ctx.fillStyle = '#8a8578'
-    ctx.font = this.pxFont(Math.round(0.45 * CM), false)
+  drawWatermark(ctx, W, H) {
+    if (!this.data.watermark) return
+    const text = (this.data.footerText || '墨学').slice(0, 20)
+    ctx.save()
+    ctx.translate(W / 2, H / 2)
+    ctx.rotate(-Math.PI / 6)
+    ctx.fillStyle = 'rgba(178,58,51,0.07)'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText('墨学 · A4 打印请选「实际大小 / 100%」', W / 2, H - Math.round(0.9 * CM))
+    ctx.font = this.pxFont(Math.round(2.0 * CM), true)
+    for (let r = -1; r <= 1; r += 1) {
+      for (let c = -1; c <= 1; c += 1) {
+        ctx.fillText(text, c * W * 0.55, r * H * 0.34)
+      }
+    }
+    ctx.restore()
+  },
+
+  drawFooter(ctx, W, H) {
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = this.data.footerText ? '#b23a33' : '#8a8578'
+    ctx.font = this.pxFont(Math.round(0.45 * CM), false)
+    const text = this.data.footerText || '墨学 · A4 打印请选「实际大小 / 100%」'
+    ctx.fillText(text, W / 2, H - Math.round(0.9 * CM))
   },
 
   drawChar(ctx, char, x, y, cell, color) {

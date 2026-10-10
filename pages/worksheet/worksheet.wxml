@@ -95,6 +95,21 @@
     </view>
   </view>
 
+  <view class="section-title">署名 / 版权</view>
+  <input
+    class="footer-input"
+    placeholder="如：XX小学 · 王老师 编制（可选）"
+    value="{{footerText}}"
+    bindinput="onFooterInput"
+    maxlength="20"
+  />
+  <view class="opt-row">
+    <text class="opt-label">水印</text>
+    <view class="chips">
+      <view class="chip sm {{watermark ? 'active' : ''}}" bindtap="toggleWatermark">{{watermark ? '开' : '关'}}</view>
+    </view>
+  </view>
+
   <view class="muted count">A4（300dpi）· 共 {{chars.length}} 个不重复汉字 · 打印选「实际大小」</view>
 
   <view class="btn block" bindtap="generate">生成字帖</view>

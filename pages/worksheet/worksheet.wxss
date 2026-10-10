@@ -97,3 +97,15 @@
   font-size: 30rpx;
   color: #2b2b2b;
 }
+
+.footer-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 80rpx;
+  padding: 0 24rpx;
+  margin-bottom: 20rpx;
+  background-color: #fdfbf5;
+  border: 1rpx solid #e7e0d0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+}
