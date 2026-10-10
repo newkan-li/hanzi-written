@@ -136,10 +136,26 @@ Page({
   },
 
   createWriter(charArg) {
-    this.destroyWriter()
-    const { mode } = this.data
     const char = charArg || this.data.char
-    this.setData({ loading: true, error: '', info: { pinyin: '', radical: '—', structure: '—', strokes: '—', words: [], meaning: '—' } })
+    this.setData({
+      loading: true,
+      error: '',
+      info: { pinyin: '', radical: '—', structure: '—', strokes: '—', words: [], meaning: '—' }
+    })
+
+    // 复用同一个 writer 实例：setCharacter 会取消上一次动画并加载新字，
+    // 避免多个实例同时在同一画布上渲染（表现为“同时画好几个字”）。
+    if (this.writerCtx) {
+      try {
+        this.writerCtx.setCharacter(char)
+      } catch (e) {
+        this.setData({
+          loading: false,
+          error: '切换失败：' + (e && e.message ? e.message : e)
+        })
+      }
+      return
+    }
 
     try {
       this.writerCtx = createHanziWriterContext({
@@ -165,7 +181,7 @@ Page({
         },
         onLoadCharDataSuccess: () => {
           this.setData({ loading: false })
-          this.runMode(mode)
+          this.runMode(this.data.mode)
         },
         onLoadCharDataError: () => {
           this.setData({
@@ -185,9 +201,13 @@ Page({
   destroyWriter() {
     if (!this.writerCtx) return
     try {
-      this.writerCtx.cancelQuiz()
+      this.writerCtx.destroy()
     } catch (e) {
-      /* 忽略 */
+      try {
+        this.writerCtx.cancelQuiz()
+      } catch (err) {
+        /* 忽略 */
+      }
     }
     this.writerCtx = null
   },
