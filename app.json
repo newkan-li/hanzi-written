@@ -14,6 +14,7 @@
     "pages/poster/poster",
     "pages/scribe/scribe",
     "pages/traj/traj",
+    "pages/about/about",
     "pages/profile/profile"
   ],
   "window": {

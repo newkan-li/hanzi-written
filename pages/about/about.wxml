@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="card">
+    <view class="app-name">{{name}}</view>
+    <view class="muted">版本 {{version}}</view>
+    <view class="intro">墨学是一款面向硬笔书法与汉字书写练习的小程序：笔顺动画、描红跟写、笔顺测验，并支持教材同步（部编版 1–6 年级生字）、听写测试、字帖生成、自由书写与练习轨迹。</view>
+  </view>
+
+  <view class="section-title">数据与隐私</view>
+  <view class="card">
+    <view class="item">本小程序<text class="strong">不收集、不上传任何个人身份信息</text>。</view>
+    <view class="item">练习记录、收藏、打卡、生字本与练习轨迹均保存在<text class="strong">你的设备本地</text>，不会同步到服务器。</view>
+    <view class="item">清除微信缓存或卸载小程序会导致以上本地数据丢失。</view>
+  </view>
+
+  <view class="section-title">权限说明</view>
+  <view class="card">
+    <view class="item">相册权限：仅在保存字帖 / 海报 / 书写作品到相册时使用；拒绝后仍可使用其他功能。</view>
+    <view class="item">网络权限：用于按需下载汉字笔画数据（首次练习某个字时）。</view>
+  </view>
+
+  <view class="section-title">第三方服务</view>
+  <view class="card">
+    <view class="item">汉字笔画数据来自开源项目 <text class="strong">hanzi-writer-data</text>（Make Me A Hanzi / Arphic Public License）。</view>
+    <view class="item">字库内核 <text class="strong">hanzi-writer</text>（MIT）。</view>
+    <view class="item">教材字表参考公开的部编版（统编版）小学语文生字表整理。</view>
+    <view class="item">朗读发音使用公开 TTS 接口，或由开发者自行配置。</view>
+  </view>
+
+  <view class="section-title">联系与反馈</view>
+  <view class="card" bindtap="copyContact">
+    <view class="item">邮箱：your-email@example.com（点按复制）</view>
+    <view class="item muted">如对内容或版权有疑问，欢迎联系。</view>
+  </view>
+
+  <view class="footer muted">© {{name}} · 仅供学习使用</view>
+</view>

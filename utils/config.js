@@ -1,19 +1,31 @@
 /**
- * 全局配置
+ * 全局配置（上线时重点改这里）
  */
 module.exports = {
-  // 笔画数据 CDN（jsDelivr 托管的 hanzi-writer-data）
-  // 需在微信后台「开发设置 - 服务器域名」把 cdn.jsdelivr.net 加入 request 合法域名，
-  // 或在开发者工具中勾选「不校验合法域名」。
+  // 笔画数据源（hanzi-writer-data 单字 JSON 的基地址，末尾不带斜杠）。
+  //
+  // 开发期用 jsDelivr；但国内访问 jsDelivr 常不稳定，正式上线建议改为
+  // 国内可达的静态托管（微信云开发存储 / 腾讯云 COS / 阿里云 OSS / 自建 CDN）。
+  //
+  // 数据文件名规则：<字>.json（如 我.json）。可用 tools/fetch-strokes.mjs
+  // 批量下载后上传到你自己的存储桶，再把这里改成你的域名。
+  //
+  // 例：charDataCDN: 'https://your-bucket-1250000000.cos.ap-guangzhou.myqcloud.com/hanzi-data'
   charDataCDN: 'https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest',
 
-  // 朗读音源（零后端方案：使用公开 TTS 接口）。
-  // 如需替换为自有 TTS 或同声传译插件，改这里的 url 即可；
-  // 正式发布请把域名加入 request 合法域名。
+  // 朗读发音。false 时不请求任何外部 TTS（可用于合规/无网环境）。
+  // 正式上线建议替换为自有 TTS 服务或「微信同声传译」插件。
   tts: {
+    enabled: true,
     url: (text) =>
       'https://fanyi.baidu.com/gettts?lan=zh&text=' +
       encodeURIComponent(text) +
       '&spd=5&source=web'
+  },
+
+  // 应用信息（关于页展示）
+  app: {
+    name: '墨学',
+    version: '0.1.0'
   }
 }

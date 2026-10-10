@@ -100,7 +100,7 @@ Page({
 
   speak(char) {
     const c = char || this.data.char
-    if (!c || !config.tts || !config.tts.url) return
+    if (!c || !config.tts || !config.tts.enabled || !config.tts.url) return
     if (this._audio) {
       this._audio.destroy()
       this._audio = null

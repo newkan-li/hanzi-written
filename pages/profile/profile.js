@@ -48,6 +48,10 @@ Page({
     wx.navigateTo({ url: '/pages/traj/traj' })
   },
 
+  onOpenAbout() {
+    wx.navigateTo({ url: '/pages/about/about' })
+  },
+
   onClearRecords() {
     wx.showModal({
       title: '清空练习记录',

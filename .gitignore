@@ -4,6 +4,7 @@ package-lock.json
 yarn.lock
 .DS_Store
 project.private.config.json
+dist-strokes/
 
 # Office/LibreOffice lock files
 .~lock.*#

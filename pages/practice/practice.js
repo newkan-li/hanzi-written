@@ -271,7 +271,7 @@ Page({
       this._audio.destroy()
       this._audio = null
     }
-    if (!config.tts || !config.tts.url) {
+    if (!config.tts || !config.tts.enabled || !config.tts.url) {
       wx.showToast({ title: '未配置朗读音源', icon: 'none' })
       return
     }

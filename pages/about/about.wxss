@@ -1,0 +1,27 @@
+.app-name {
+  font-size: 48rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+}
+.intro {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  line-height: 1.7;
+  color: #2b2b2b;
+}
+.item {
+  font-size: 28rpx;
+  line-height: 1.7;
+  margin-bottom: 12rpx;
+}
+.item:last-child {
+  margin-bottom: 0;
+}
+.strong {
+  font-weight: 600;
+  color: #b23a33;
+}
+.footer {
+  text-align: center;
+  margin: 40rpx 0;
+}
