@@ -42,6 +42,12 @@ const CELL_OPTIONS = [
 ]
 const TRACE_OPTIONS = [0, 1, 2]
 
+const REPEAT_OPTIONS = [
+  { key: 1, name: '不重复' },
+  { key: 2, name: '2 遍' },
+  { key: 3, name: '3 遍' }
+]
+
 function cnChars(str) {
   return (str || '').split('').filter((c) => /[\u4e00-\u9fa5]/.test(c))
 }
@@ -64,6 +70,8 @@ Page({
     cellCm: '1.5',
     traceOptions: TRACE_OPTIONS,
     traceRows: 1,
+    repeatOptions: REPEAT_OPTIONS,
+    repeat: 1,
     footerText: '',
     watermark: false,
     chars: [],
@@ -122,6 +130,10 @@ Page({
 
   pickTrace(e) {
     this.setData({ traceRows: Number(e.currentTarget.dataset.value) })
+  },
+
+  pickRepeat(e) {
+    this.setData({ repeat: Number(e.currentTarget.dataset.value) })
   },
 
   pickTemplate(e) {
@@ -213,12 +225,24 @@ Page({
       wx.showToast({ title: '没有可生成的字', icon: 'none' })
       return
     }
+    const repeat = Math.max(1, this.data.repeat || 1)
+    // 默认每个字只出现一次（范字）；选了“重复遍数”才连排多次（首个为范字，其余描红）
+    const seq = []
+    const first = []
+    chars.forEach((ch) => {
+      for (let k = 0; k < repeat; k += 1) {
+        seq.push(ch)
+        first.push(k === 0)
+      }
+    })
     const { W, H } = this.pageSize()
     const cell = Math.round(Number(this.data.cellCm) * CM)
     const cols = Math.max(1, Math.floor((W - 2 * SIDE) / cell))
     const rows = Math.max(1, Math.floor((H - HEADER - FOOTER) / cell))
     const startX = Math.round((W - cols * cell) / 2)
-    this.buildCanvas(W, H, (ctx) => this.drawGridSheet(ctx, chars, cols, rows, cell, startX, W, H))
+    this.buildCanvas(W, H, (ctx) =>
+      this.drawGridSheet(ctx, seq, first, cols, rows, cell, startX, W, H)
+    )
   },
 
   generatePoem() {
@@ -284,17 +308,17 @@ Page({
     ctx.fillText(char, x + cell / 2, y + cell / 2)
   },
 
-  drawGridSheet(ctx, chars, cols, rows, cell, startX, W, H) {
+  drawGridSheet(ctx, seq, first, cols, rows, cell, startX, W, H) {
     const gridStyle = this.data.gridStyle
     this.drawHeader(ctx, W, H, '汉字练习字帖', formatDate())
-    for (let r = 0; r < rows; r += 1) {
-      for (let c = 0; c < cols; c += 1) {
-        const x = startX + c * cell
-        const y = HEADER + r * cell
-        this.drawGrid(ctx, x, y, cell, gridStyle)
-        const char = chars[(r * cols + c) % chars.length]
-        this.drawChar(ctx, char, x, y, cell, r === 0 ? '#2b2b2b' : '#cfc7b4')
-      }
+    const total = rows * cols
+    for (let k = 0; k < total && k < seq.length; k += 1) {
+      const r = Math.floor(k / cols)
+      const c = k % cols
+      const x = startX + c * cell
+      const y = HEADER + r * cell
+      this.drawGrid(ctx, x, y, cell, gridStyle)
+      this.drawChar(ctx, seq[k], x, y, cell, first[k] ? '#2b2b2b' : '#cfc7b4')
     }
     this.drawFooter(ctx, W, H)
   },

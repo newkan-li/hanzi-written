@@ -82,6 +82,19 @@
     </view>
   </view>
 
+  <view class="opt-row" wx:if="{{layout === 'grid'}}">
+    <text class="opt-label">每字重复</text>
+    <view class="chips">
+      <view
+        class="chip sm {{repeat === item.key ? 'active' : ''}}"
+        wx:for="{{repeatOptions}}"
+        wx:key="key"
+        data-value="{{item.key}}"
+        bindtap="pickRepeat"
+      >{{item.name}}</view>
+    </view>
+  </view>
+
   <view class="opt-row" wx:if="{{layout === 'poem'}}">
     <text class="opt-label">描红行</text>
     <view class="chips">
