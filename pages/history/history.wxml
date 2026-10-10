@@ -1,0 +1,38 @@
+<view class="page">
+  <view class="stats card">
+    <view class="stat">
+      <view class="stat-num">{{stats.days}}</view>
+      <view class="muted">练习天数</view>
+    </view>
+    <view class="stat">
+      <view class="stat-num">{{stats.totalCount}}</view>
+      <view class="muted">总练习次数</view>
+    </view>
+    <view class="stat">
+      <view class="stat-num">{{stats.charCount}}</view>
+      <view class="muted">练过字数</view>
+    </view>
+  </view>
+
+  <view class="section-title">每日记录</view>
+  <block wx:if="{{log.length}}">
+    <view class="day card" wx:for="{{log}}" wx:key="date">
+      <view class="day-head">
+        <text class="day-label">{{item.label}}</text>
+        <text class="muted">{{item.count}} 次 · {{item.chars.length}} 字</text>
+      </view>
+      <view class="chips">
+        <view
+          class="chip"
+          wx:for="{{item.chars}}"
+          wx:for-item="c"
+          wx:key="*this"
+          data-char="{{c}}"
+          bindtap="onTapChar"
+        >{{c}}</view>
+      </view>
+    </view>
+    <view class="btn ghost block" bindtap="onClear">清空学习记录</view>
+  </block>
+  <view class="muted empty" wx:else>还没有学习记录，去练几个字吧</view>
+</view>

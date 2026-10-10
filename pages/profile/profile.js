@@ -64,6 +64,10 @@ Page({
     wx.navigateTo({ url: '/pages/traj/traj' })
   },
 
+  onOpenHistory() {
+    wx.navigateTo({ url: '/pages/history/history' })
+  },
+
   onOpenAbout() {
     wx.navigateTo({ url: '/pages/about/about' })
   },

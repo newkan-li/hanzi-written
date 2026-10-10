@@ -17,7 +17,8 @@
     "pages/scribe/scribe",
     "pages/traj/traj",
     "pages/about/about",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/history/history"
   ],
   "window": {
     "backgroundTextStyle": "@bgTxtStyle",

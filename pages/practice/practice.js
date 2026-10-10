@@ -66,6 +66,7 @@ Page({
     const size = Math.floor((info.windowWidth || 375) * 0.8)
     const char = list[index]
     const record = storage.addRecord(char)
+    storage.addDailyPractice(char)
     storage.checkin()
     const note = app.globalData.practiceNote || null
     app.globalData.practiceNote = null
@@ -302,6 +303,7 @@ Page({
     const chars = word.split('').filter((c) => /[\u4e00-\u9fa5]/.test(c))
     if (!chars.length) return
     const record = storage.addRecord(chars[0])
+    storage.addDailyPractice(chars[0])
     this.setData({
       chars,
       total: chars.length,
@@ -367,6 +369,7 @@ Page({
     const next = (this.data.index + delta + total) % total
     const char = this.data.chars[next]
     const record = storage.addRecord(char)
+    storage.addDailyPractice(char)
     releaseAudio(this)
     this.setData({
       index: next,

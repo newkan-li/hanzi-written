@@ -7,6 +7,7 @@ const PREF_KEY = 'hw_prefs'
 const CHECKIN_KEY = 'hw_checkins'
 const WEAK_KEY = 'hw_weak'
 const TRAJ_KEY = 'hw_trajectory'
+const DAILY_KEY = 'hw_daily'
 
 /* ---------- 偏好 ---------- */
 function getPrefs() {
@@ -227,6 +228,40 @@ function clearTrajectory() {
   wx.removeStorageSync(TRAJ_KEY)
 }
 
+/* ---------- 学习记录（按天） ---------- */
+function addDailyPractice(char) {
+  const map = wx.getStorageSync(DAILY_KEY) || {}
+  const today = dateKey()
+  const d = map[today] || { count: 0, chars: {} }
+  d.count += 1
+  if (char) d.chars[char] = (d.chars[char] || 0) + 1
+  map[today] = d
+  // 只保留最近 180 天
+  const keys = Object.keys(map).sort()
+  while (keys.length > 180) {
+    delete map[keys.shift()]
+  }
+  wx.setStorageSync(DAILY_KEY, map)
+  return d
+}
+
+function getDailyLog(limit) {
+  const map = wx.getStorageSync(DAILY_KEY) || {}
+  return Object.keys(map)
+    .sort()
+    .reverse()
+    .slice(0, limit || 60)
+    .map((date) => ({
+      date,
+      count: map[date].count,
+      chars: Object.keys(map[date].chars || {})
+    }))
+}
+
+function clearDaily() {
+  wx.removeStorageSync(DAILY_KEY)
+}
+
 /* ---------- 汇总 ---------- */
 function getStats() {
   const records = wx.getStorageSync(REC_KEY) || {}
@@ -263,5 +298,8 @@ module.exports = {
   addTrajectory,
   removeTrajectory,
   clearTrajectory,
+  addDailyPractice,
+  getDailyLog,
+  clearDaily,
   getStats
 }
