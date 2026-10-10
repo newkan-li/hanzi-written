@@ -191,8 +191,12 @@ Page({
 
   go(e) {
     const delta = Number(e.currentTarget.dataset.delta)
-    const next = this.data.index + delta
-    if (next < 0 || next >= this.data.total) return
+    const total = this.data.total
+    if (total <= 1) {
+      wx.showToast({ title: '只有一个字，去字库或搜索练更多', icon: 'none' })
+      return
+    }
+    const next = (this.data.index + delta + total) % total
     const char = this.data.chars[next]
     const record = storage.addRecord(char)
     this.setData({
