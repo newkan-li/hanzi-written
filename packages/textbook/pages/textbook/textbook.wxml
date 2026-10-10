@@ -1,0 +1,70 @@
+<view class="page">
+  <scroll-view scroll-x class="books" enable-flex>
+    <view
+      class="book {{currentBookId === item.id ? 'active' : ''}}"
+      wx:for="{{books}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="pickBook"
+    >{{item.short}}</view>
+  </scroll-view>
+
+  <view class="book-meta muted" wx:if="{{book}}">
+    {{book.name}} · 识字表 {{book.shiziCount}} · 写字表 {{book.xieziCount}}
+  </view>
+
+  <view class="tabs">
+    <view class="tab {{mode === 'shizi' ? 'active' : ''}}" data-mode="shizi" bindtap="pickMode">识字表</view>
+    <view class="tab {{mode === 'xiezi' ? 'active' : ''}}" data-mode="xiezi" bindtap="pickMode">写字表</view>
+  </view>
+
+  <view class="units">
+    <view class="unit" wx:for="{{units}}" wx:for-item="u" wx:key="title">
+      <view class="unit-title">{{u.title}}<text class="unit-theme">{{u.theme}}</text></view>
+      <view class="lessons">
+        <view
+          class="lesson {{currentLesson.id === lid.id ? 'active' : ''}}"
+          wx:for="{{u.lessons}}"
+          wx:for-item="lid"
+          wx:key="id"
+          data-id="{{lid.id}}"
+          bindtap="pickLesson"
+        >{{lid.title}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="detail card" wx:if="{{currentLesson}}">
+    <view class="detail-head">
+      <text class="detail-title">{{currentLesson.title}}</text>
+      <text class="tag">{{currentLesson.kind}}</text>
+    </view>
+
+    <view class="chars">
+      <view
+        class="c"
+        wx:for="{{currentLesson[mode]}}"
+        wx:key="*this"
+        data-char="{{item}}"
+        bindtap="tapChar"
+      >{{item}}</view>
+      <view class="muted none" wx:if="{{!currentLesson[mode].length}}">本课无{{mode === 'shizi' ? '识字表' : '写字表'}}</view>
+    </view>
+
+    <view class="words" wx:if="{{currentLesson.words.length}}">
+      <view class="words-label muted">例词</view>
+      <view
+        class="word"
+        wx:for="{{currentLesson.words}}"
+        wx:key="*this"
+        data-word="{{item}}"
+        bindtap="tapWord"
+      >{{item}}</view>
+    </view>
+
+    <view class="actions">
+      <view class="btn" bindtap="practiceLesson">练本课</view>
+      <view class="btn ghost" bindtap="worksheetLesson">本课字帖</view>
+    </view>
+  </view>
+</view>

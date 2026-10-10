@@ -17,5 +17,9 @@ Page({
 
   onOpenIdiom() {
     wx.navigateTo({ url: '/pages/idiom/idiom' })
+  },
+
+  onOpenTextbook() {
+    wx.navigateTo({ url: '/packages/textbook/pages/textbook/textbook' })
   }
 })
