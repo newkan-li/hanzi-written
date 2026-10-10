@@ -21,9 +21,9 @@ const GRIDS = [
 ]
 
 const PENS = [
-  { key: 'pencil', name: '铅笔', color: '#7d7d7d', width: 6 },
-  { key: 'pen', name: '钢笔', color: '#1b3a8a', width: 9 },
-  { key: 'brush', name: '毛笔', color: '#141414', width: 20 }
+  { key: 'pencil', name: '铅笔', color: '#7d7d7d', width: 7 },
+  { key: 'pen', name: '钢笔', color: '#1b3a8a', width: 11 },
+  { key: 'brush', name: '毛笔', color: '#141414', width: 24 }
 ]
 
 function penStyle(key) {
@@ -190,6 +190,7 @@ Page({
         highlightColor: '#e0b84c',
         drawingColor: pen.color,
         drawingWidth: pen.width,
+        penType: this.data.pen,
         strokeAnimationSpeed: 1,
         delayBetweenStrokes: 250,
         charDataLoader: (c, onLoad, onError) => {

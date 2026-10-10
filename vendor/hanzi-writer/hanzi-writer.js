@@ -1423,6 +1423,7 @@ function RenderState(character, options, onStateChange) {
       drawingFadeDuration: options.drawingFadeDuration,
       drawingWidth: options.drawingWidth,
       drawingColor: colorStringToVals(options.drawingColor),
+      penType: options.penType,
       strokeColor: colorStringToVals(options.strokeColor),
       outlineColor: colorStringToVals(options.outlineColor),
       radicalColor: colorStringToVals(options.radicalColor || options.strokeColor),
@@ -2527,7 +2528,8 @@ HanziWriterRenderer.prototype.render = function (props) {
       if (userStrokes[userStrokeId]) {
         var userStrokeProps = assign({
           strokeWidth: props.options.drawingWidth,
-          strokeColor: props.options.drawingColor
+          strokeColor: props.options.drawingColor,
+          penType: props.options.penType
         }, userStrokes[userStrokeId]);
         renderUserStroke(ctx, userStrokeProps);
       }
@@ -2657,15 +2659,49 @@ module.exports = function (ctx, props) {
       g = _props$strokeColor.g,
       b = _props$strokeColor.b,
       a = _props$strokeColor.a;
-
+  var pts = props.points || [];
+  if (!pts.length) return;
+  var base = props.strokeWidth;
+  var pen = props.penType || 'pen';
 
   ctx.save();
   ctx.globalAlpha = props.opacity;
-  ctx.lineWidth = props.strokeWidth;
   ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  ctx.fillStyle = ctx.strokeStyle;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  drawPath(ctx, props.points);
+
+  if (pts.length === 1) {
+    ctx.beginPath();
+    ctx.arc(pts[0].x, pts[0].y, base / 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return;
+  }
+
+  // 变速变宽：慢则宽、快则窄；笔锋起收收细（铅笔较均匀）
+  var ref = pen === 'brush' ? 26 : pen === 'pencil' ? 42 : 34;
+  var lo = pen === 'brush' ? 0.35 : 0.6;
+  var hi = pen === 'brush' ? 1.9 : pen === 'pencil' ? 1.1 : 1.25;
+  var n = pts.length;
+  for (var i = 1; i < n; i++) {
+    var dx = pts[i].x - pts[i - 1].x;
+    var dy = pts[i].y - pts[i - 1].y;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    var f = 1.5 - d / ref;
+    if (f < lo) f = lo; else if (f > hi) f = hi;
+    var t = i / (n - 1);
+    var taper = 1;
+    if (pen !== 'pencil') {
+      if (t < 0.15) taper = 0.55 + 0.45 * (t / 0.15);
+      else if (t > 0.85) taper = 0.55 + 0.45 * ((1 - t) / 0.15);
+    }
+    ctx.lineWidth = base * f * taper;
+    ctx.beginPath();
+    ctx.moveTo(pts[i - 1].x, pts[i - 1].y);
+    ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.stroke();
+  }
   ctx.restore();
 };
 
