@@ -110,11 +110,18 @@ Page({
   },
 
   onSearch() {
-    const chars = this.data.query
-      .split('')
-      .filter((c) => /[\u4e00-\u9fa5]/.test(c))
+    const q = (this.data.query || '').trim()
+    if (!q) {
+      wx.showToast({ title: '请输入汉字或拼音', icon: 'none' })
+      return
+    }
+    if (/[a-zA-Z]/.test(q)) {
+      wx.navigateTo({ url: '/pages/search/search?q=' + encodeURIComponent(q) })
+      return
+    }
+    const chars = q.split('').filter((c) => /[\u4e00-\u9fa5]/.test(c))
     if (!chars.length) {
-      wx.showToast({ title: '请输入汉字', icon: 'none' })
+      wx.showToast({ title: '请输入汉字或拼音', icon: 'none' })
       return
     }
     this.openPractice(chars, 0)

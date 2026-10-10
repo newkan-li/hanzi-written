@@ -7,7 +7,7 @@
   <view class="search card">
     <input
       class="search-input"
-      placeholder="输入汉字，如：永"
+      placeholder="输入汉字或拼音，如：永 / yong"
       value="{{query}}"
       confirm-type="search"
       bindinput="onInput"

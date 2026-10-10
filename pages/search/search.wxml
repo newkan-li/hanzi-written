@@ -1,0 +1,26 @@
+<view class="page">
+  <view class="search card">
+    <input
+      class="search-input"
+      placeholder="输入汉字或拼音，如 永 / yong"
+      value="{{q}}"
+      confirm-type="search"
+      bindinput="onInput"
+      bindconfirm="onSearch"
+    />
+    <view class="btn" bindtap="onSearch">搜索</view>
+  </view>
+
+  <view class="muted hint" wx:if="{{pinMode && chars.length}}">按拼音匹配到 {{chars.length}} 个字</view>
+
+  <view class="chars" wx:if="{{chars.length}}">
+    <view
+      class="c"
+      wx:for="{{chars}}"
+      wx:key="*this"
+      data-char="{{item}}"
+      bindtap="onTapChar"
+    >{{item}}</view>
+  </view>
+  <view class="muted empty" wx:else>没有找到相关汉字</view>
+</view>
