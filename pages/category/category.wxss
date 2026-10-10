@@ -17,8 +17,8 @@
   width: calc((100% - 72rpx) / 4);
   height: 0;
   padding-bottom: calc((100% - 72rpx) / 4);
-  background-color: #fdfbf5;
-  border: 1rpx solid #e7e0d0;
+  background-color: var(--card);
+  border: 1rpx solid var(--border);
   border-radius: 16rpx;
   overflow: hidden;
 }
@@ -33,7 +33,7 @@
   justify-content: center;
   z-index: 1;
   font-size: 64rpx;
-  color: #2b2b2b;
+  color: var(--ink);
   font-family: "Songti SC", serif;
 }
 /* 田字格辅助线 */
@@ -66,16 +66,16 @@
 .pg {
   padding: 16rpx 44rpx;
   border-radius: 40rpx;
-  background-color: #b23a33;
+  background-color: var(--accent);
   color: #fff;
   font-size: 28rpx;
 }
 .pg.disabled {
-  background-color: #e7e0d0;
-  color: #b7b0a2;
+  background-color: var(--border);
+  color: var(--muted-soft);
 }
 .pg-info {
-  color: #8a8578;
+  color: var(--muted);
   font-size: 28rpx;
 }
 
@@ -104,7 +104,7 @@
   line-height: 1.6;
   letter-spacing: 6rpx;
   font-family: "Songti SC", serif;
-  color: #2b2b2b;
+  color: var(--ink);
 }
 .actions {
   display: flex;

@@ -7,14 +7,14 @@
   padding: 14rpx 30rpx;
   margin-right: 16rpx;
   border-radius: 32rpx;
-  border: 1rpx solid #d8cfb8;
-  background-color: #fdfbf5;
-  color: #8a8578;
+  border: 1rpx solid var(--border2);
+  background-color: var(--card);
+  color: var(--muted);
   font-size: 26rpx;
 }
 .book.active {
-  border-color: #b23a33;
-  background-color: #b23a33;
+  border-color: var(--accent);
+  background-color: var(--accent);
   color: #fff;
 }
 .book-meta {
@@ -29,20 +29,20 @@
 .tabs {
   display: flex;
   margin: 8rpx 0 24rpx;
-  border: 1rpx solid #e7e0d0;
+  border: 1rpx solid var(--border);
   border-radius: 40rpx;
   overflow: hidden;
-  background-color: #fdfbf5;
+  background-color: var(--card);
 }
 .tab {
   flex: 1;
   text-align: center;
   padding: 18rpx 0;
   font-size: 28rpx;
-  color: #8a8578;
+  color: var(--muted);
 }
 .tab.active {
-  background-color: #b23a33;
+  background-color: var(--accent);
   color: #fff;
 }
 
@@ -56,7 +56,7 @@
 }
 .unit-theme {
   margin-left: 12rpx;
-  color: #8a8578;
+  color: var(--muted);
   font-size: 22rpx;
   font-weight: 400;
 }
@@ -65,7 +65,7 @@
   font-weight: 400;
 }
 .unit-act {
-  color: #b23a33;
+  color: var(--accent);
   font-size: 24rpx;
   margin-left: 20rpx;
 }
@@ -77,14 +77,14 @@
 .lesson {
   padding: 12rpx 26rpx;
   border-radius: 12rpx;
-  border: 1rpx solid #e7e0d0;
-  background-color: #fdfbf5;
-  color: #2b2b2b;
+  border: 1rpx solid var(--border);
+  background-color: var(--card);
+  color: var(--ink);
   font-size: 26rpx;
 }
 .lesson.active {
-  border-color: #b23a33;
-  color: #b23a33;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .detail {
@@ -112,8 +112,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 14rpx;
-  border: 1rpx solid #e7e0d0;
-  background-color: #fff;
+  border: 1rpx solid var(--border);
+  background-color: var(--card);
   font-size: 46rpx;
   font-family: "Songti SC", serif;
 }
@@ -131,8 +131,8 @@
   padding: 8rpx 24rpx;
   margin: 0 16rpx 16rpx 0;
   border-radius: 24rpx;
-  background-color: #f4efe3;
-  color: #b23a33;
+  background-color: var(--input);
+  color: var(--accent);
   font-size: 28rpx;
 }
 .actions {

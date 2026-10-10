@@ -7,14 +7,14 @@
   padding: 14rpx 30rpx;
   margin-right: 16rpx;
   border-radius: 32rpx;
-  border: 1rpx solid #d8cfb8;
-  background-color: #fdfbf5;
-  color: #8a8578;
+  border: 1rpx solid var(--border2);
+  background-color: var(--card);
+  color: var(--muted);
   font-size: 26rpx;
 }
 .book.active {
-  border-color: #b23a33;
-  background-color: #b23a33;
+  border-color: var(--accent);
+  background-color: var(--accent);
   color: #fff;
 }
 
@@ -29,7 +29,7 @@
   padding: 24rpx;
 }
 .poem.active {
-  border-color: #b23a33;
+  border-color: var(--accent);
 }
 .poem-title {
   font-size: 34rpx;

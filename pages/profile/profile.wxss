@@ -7,7 +7,7 @@
 .streak-num {
   font-size: 72rpx;
   font-weight: 700;
-  color: #b23a33;
+  color: var(--accent);
   line-height: 1.1;
   text-align: center;
 }
@@ -20,14 +20,14 @@
   width: 44rpx;
   height: 44rpx;
   border-radius: 50%;
-  border: 1rpx solid #d8cfb8;
+  border: 1rpx solid var(--border2);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .day.done {
-  background-color: #b23a33;
-  border-color: #b23a33;
+  background-color: var(--accent);
+  border-color: var(--accent);
 }
 .total {
   margin-top: 6rpx;
@@ -49,8 +49,8 @@
 .time-val {
   padding: 8rpx 26rpx;
   border-radius: 30rpx;
-  border: 1rpx solid #d8cfb8;
-  color: #b23a33;
+  border: 1rpx solid var(--border2);
+  color: var(--accent);
   font-size: 28rpx;
 }
 .remind-note {
@@ -70,7 +70,7 @@
 .stat-num {
   font-size: 52rpx;
   font-weight: 700;
-  color: #b23a33;
+  color: var(--accent);
 }
 
 .actions {
@@ -93,8 +93,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fdfbf5;
-  border: 1rpx solid #e7e0d0;
+  background-color: var(--card);
+  border: 1rpx solid var(--border);
   border-radius: 16rpx;
   font-size: 48rpx;
   font-family: "Songti SC", serif;
@@ -109,8 +109,8 @@
   flex: 1;
   min-width: 140rpx;
   padding: 24rpx;
-  background-color: #fdfbf5;
-  border: 1rpx solid #e7e0d0;
+  background-color: var(--card);
+  border: 1rpx solid var(--border);
   border-radius: 16rpx;
   text-align: center;
 }

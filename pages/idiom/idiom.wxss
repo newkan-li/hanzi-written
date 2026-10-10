@@ -8,7 +8,7 @@
   flex: 1;
   height: 76rpx;
   padding: 0 24rpx;
-  background-color: #f4efe3;
+  background-color: var(--input);
   border-radius: 38rpx;
   font-size: 28rpx;
 }
@@ -27,7 +27,7 @@
   letter-spacing: 6rpx;
 }
 .idiom-pinyin {
-  color: #b23a33;
+  color: var(--accent);
   font-size: 24rpx;
   margin: 8rpx 0;
 }

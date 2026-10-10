@@ -6,19 +6,19 @@
 .chip {
   padding: 14rpx 32rpx;
   border-radius: 32rpx;
-  border: 1rpx solid #d8cfb8;
-  color: #8a8578;
+  border: 1rpx solid var(--border2);
+  color: var(--muted);
   font-size: 26rpx;
-  background-color: #fdfbf5;
+  background-color: var(--card);
 }
 .chip.active {
-  border-color: #b23a33;
-  background-color: #b23a33;
+  border-color: var(--accent);
+  background-color: var(--accent);
   color: #fff;
 }
 .pick-chip {
   border-style: dashed;
-  color: #b23a33;
+  color: var(--accent);
 }
 .chip.sm {
   padding: 10rpx 30rpx;
@@ -35,11 +35,11 @@
   box-sizing: border-box;
   padding: 24rpx;
   border-radius: 16rpx;
-  border: 1rpx solid #e7e0d0;
-  background-color: #fdfbf5;
+  border: 1rpx solid var(--border);
+  background-color: var(--card);
 }
 .tpl.active {
-  border-color: #b23a33;
+  border-color: var(--accent);
 }
 .tpl-name {
   font-size: 32rpx;
@@ -47,7 +47,7 @@
 }
 .tpl-desc {
   margin-top: 8rpx;
-  color: #8a8578;
+  color: var(--muted);
   font-size: 22rpx;
 }
 
@@ -57,8 +57,8 @@
   min-height: 160rpx;
   margin-top: 24rpx;
   padding: 24rpx;
-  background-color: #fdfbf5;
-  border: 1rpx solid #e7e0d0;
+  background-color: var(--card);
+  border: 1rpx solid var(--border);
   border-radius: 16rpx;
   font-size: 28rpx;
 }
@@ -69,7 +69,7 @@
   margin-bottom: 20rpx;
 }
 .opt-label {
-  color: #8a8578;
+  color: var(--muted);
   font-size: 26rpx;
   margin-right: 24rpx;
   flex-shrink: 0;
@@ -80,8 +80,8 @@
 }
 .worksheet-canvas {
   margin: 24rpx auto 0;
-  background-color: #fdfbf5;
-  border: 1rpx solid #e7e0d0;
+  background-color: var(--card);
+  border: 1rpx solid var(--border);
   border-radius: 8rpx;
   display: block;
 }
@@ -99,7 +99,7 @@
   margin: 8rpx 0 4rpx;
   font-family: "Songti SC", serif;
   font-size: 30rpx;
-  color: #2b2b2b;
+  color: var(--ink);
 }
 
 .footer-input {
@@ -108,8 +108,8 @@
   height: 80rpx;
   padding: 0 24rpx;
   margin-bottom: 20rpx;
-  background-color: #fdfbf5;
-  border: 1rpx solid #e7e0d0;
+  background-color: var(--card);
+  border: 1rpx solid var(--border);
   border-radius: 16rpx;
   font-size: 28rpx;
 }
@@ -132,7 +132,7 @@
 .preview-img {
   width: 100%;
   box-sizing: border-box;
-  border: 1rpx solid #e7e0d0;
+  border: 1rpx solid var(--border);
   border-radius: 8rpx;
-  background-color: #fdfbf5;
+  background-color: var(--card);
 }

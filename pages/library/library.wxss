@@ -22,12 +22,12 @@
 }
 .grid-desc {
   margin-top: 10rpx;
-  color: #8a8578;
+  color: var(--muted);
   font-size: 24rpx;
 }
 .grid-count {
   margin-top: 22rpx;
-  color: #b23a33;
+  color: var(--accent);
   font-size: 22rpx;
 }
 .btn.block {
@@ -46,7 +46,7 @@
 .grade-no {
   width: 120rpx;
   flex-shrink: 0;
-  color: #8a8578;
+  color: var(--muted);
   font-size: 26rpx;
 }
 .grade-books {
@@ -56,7 +56,7 @@
 .book-chip {
   padding: 14rpx 34rpx;
   border-radius: 12rpx;
-  border: 1rpx solid #e7e0d0;
-  background-color: #fdfbf5;
+  border: 1rpx solid var(--border);
+  background-color: var(--card);
   font-size: 28rpx;
 }

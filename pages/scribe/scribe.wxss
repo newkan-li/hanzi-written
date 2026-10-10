@@ -15,7 +15,7 @@
   width: 140rpx;
   height: 68rpx;
   padding: 0 20rpx;
-  background-color: #f4efe3;
+  background-color: var(--input);
   border-radius: 34rpx;
   font-size: 30rpx;
   text-align: center;
@@ -27,14 +27,14 @@
   align-items: center;
   justify-content: center;
   border-radius: 34rpx;
-  border: 1rpx solid #d8cfb8;
-  color: #8a8578;
+  border: 1rpx solid var(--border2);
+  color: var(--muted);
   font-size: 26rpx;
-  background-color: #fdfbf5;
+  background-color: var(--card);
 }
 .tool.active {
-  border-color: #b23a33;
-  background-color: #b23a33;
+  border-color: var(--accent);
+  background-color: var(--accent);
   color: #fff;
 }
 
@@ -47,7 +47,7 @@
 }
 .scribe-canvas {
   display: block;
-  background-color: #fdfbf5;
+  background-color: var(--card);
   border-radius: 8rpx;
 }
 
@@ -59,20 +59,20 @@
   box-sizing: border-box;
 }
 .swatch.active {
-  border-color: #b23a33;
+  border-color: var(--accent);
 }
 .width {
   width: 56rpx;
   height: 56rpx;
   border-radius: 50%;
-  border: 1rpx solid #d8cfb8;
+  border: 1rpx solid var(--border2);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fdfbf5;
+  background-color: var(--card);
 }
 .width.active {
-  border-color: #b23a33;
+  border-color: var(--accent);
 }
 .dot {
   border-radius: 50%;

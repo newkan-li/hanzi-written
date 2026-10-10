@@ -39,7 +39,7 @@
   height: 44rpx;
   line-height: 44rpx;
   text-align: center;
-  color: #b23a33;
+  color: var(--accent);
   font-size: 34rpx;
 }
 .empty {

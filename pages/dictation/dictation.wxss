@@ -16,7 +16,7 @@
 }
 .pinyin {
   font-size: 72rpx;
-  color: #b23a33;
+  color: var(--accent);
   letter-spacing: 4rpx;
   margin-bottom: 24rpx;
 }
@@ -42,8 +42,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 20rpx;
-  border: 1rpx solid #e7e0d0;
-  background-color: #fdfbf5;
+  border: 1rpx solid var(--border);
+  background-color: var(--card);
   font-size: 96rpx;
   font-family: "Songti SC", serif;
 }
@@ -52,7 +52,7 @@
   background-color: rgba(47, 143, 78, 0.12);
 }
 .option.wrong {
-  border-color: #b23a33;
+  border-color: var(--accent);
   background-color: rgba(178, 58, 51, 0.12);
 }
 
@@ -65,7 +65,7 @@
   color: #2f8f4e;
 }
 .no {
-  color: #b23a33;
+  color: var(--accent);
 }
 
 .result {
@@ -76,7 +76,7 @@
 .result-score {
   font-size: 96rpx;
   font-weight: 700;
-  color: #b23a33;
+  color: var(--accent);
 }
 .result-actions {
   display: flex;

@@ -19,23 +19,25 @@
     "pages/profile/profile"
   ],
   "window": {
-    "backgroundTextStyle": "dark",
-    "navigationBarBackgroundColor": "#f7f4ec",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarBackgroundColor": "@navBgColor",
     "navigationBarTitleText": "墨学",
-    "navigationBarTextStyle": "black",
-    "backgroundColor": "#f7f4ec"
+    "navigationBarTextStyle": "@navTxtStyle",
+    "backgroundColor": "@bgColor"
   },
   "tabBar": {
-    "color": "#8a8578",
-    "selectedColor": "#b23a33",
-    "backgroundColor": "#fdfbf5",
-    "borderStyle": "white",
+    "color": "@tabFontColor",
+    "selectedColor": "@tabSelectedColor",
+    "backgroundColor": "@tabBgColor",
+    "borderStyle": "@tabBorderStyle",
     "list": [
       { "pagePath": "pages/index/index", "text": "首页" },
       { "pagePath": "pages/library/library", "text": "字库" },
       { "pagePath": "pages/profile/profile", "text": "我的" }
     ]
   },
+  "darkmode": true,
+  "themeLocation": "theme.json",
   "style": "v2",
   "sitemapLocation": "sitemap.json"
 }

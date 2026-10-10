@@ -1,10 +1,40 @@
-/* 全局主题：宣纸米色 + 墨色 + 朱红 */
+/* 全局主题变量（浅色） */
 page {
-  background-color: #f7f4ec;
-  color: #2b2b2b;
+  --bg: #f7f4ec;
+  --card: #fdfbf5;
+  --input: #f4efe3;
+  --line: #efe9da;
+  --border: #e7e0d0;
+  --border2: #d8cfb8;
+  --ink: #2b2b2b;
+  --muted: #8a8578;
+  --muted-soft: #b7b0a2;
+  --accent: #b23a33;
+  --tag-bg: #efe9da;
+  --shadow: rgba(43, 43, 43, 0.05);
+
+  background-color: var(--bg);
+  color: var(--ink);
   font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Songti SC", serif;
   font-size: 28rpx;
   line-height: 1.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  page {
+    --bg: #161616;
+    --card: #222222;
+    --input: #2c2c2c;
+    --line: #333333;
+    --border: #3a3a3a;
+    --border2: #4a4a4a;
+    --ink: #e8e6e0;
+    --muted: #9a9a92;
+    --muted-soft: #6a6a62;
+    --accent: #d05a52;
+    --tag-bg: #2c2c2c;
+    --shadow: rgba(0, 0, 0, 0.35);
+  }
 }
 
 .page {
@@ -14,10 +44,10 @@ page {
 }
 
 .card {
-  background-color: #fdfbf5;
-  border: 1rpx solid #e7e0d0;
+  background-color: var(--card);
+  border: 1rpx solid var(--border);
   border-radius: 20rpx;
-  box-shadow: 0 8rpx 24rpx rgba(43, 43, 43, 0.05);
+  box-shadow: 0 8rpx 24rpx var(--shadow);
   padding: 32rpx;
 }
 
@@ -29,7 +59,7 @@ page {
 }
 
 .muted {
-  color: #8a8578;
+  color: var(--muted);
   font-size: 24rpx;
 }
 
@@ -40,7 +70,7 @@ page {
   padding: 0 36rpx;
   height: 76rpx;
   border-radius: 38rpx;
-  background-color: #b23a33;
+  background-color: var(--accent);
   color: #fff;
   font-size: 28rpx;
   letter-spacing: 2rpx;
@@ -48,8 +78,8 @@ page {
 
 .btn.ghost {
   background-color: transparent;
-  color: #b23a33;
-  border: 1rpx solid #b23a33;
+  color: var(--accent);
+  border: 1rpx solid var(--accent);
 }
 
 .btn.block {
@@ -61,7 +91,7 @@ page {
   display: inline-block;
   padding: 4rpx 18rpx;
   border-radius: 20rpx;
-  background-color: #efe9da;
-  color: #8a8578;
+  background-color: var(--tag-bg);
+  color: var(--muted);
   font-size: 22rpx;
 }
