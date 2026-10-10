@@ -61,6 +61,7 @@
   gap: 18rpx;
 }
 .c {
+  position: relative;
   width: 92rpx;
   height: 92rpx;
   display: flex;
@@ -74,8 +75,22 @@
 }
 .c.on {
   border-color: #b23a33;
-  background-color: rgba(178, 58, 51, 0.12);
-  color: #b23a33;
+  background-color: #b23a33;
+  color: #ffffff;
+}
+.c.on::after {
+  content: "✓";
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 34rpx;
+  height: 34rpx;
+  line-height: 34rpx;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #2f8f4e;
+  color: #fff;
+  font-size: 22rpx;
 }
 
 .empty {
