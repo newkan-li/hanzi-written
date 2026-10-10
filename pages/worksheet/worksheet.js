@@ -115,6 +115,21 @@ Page({
     })
   },
 
+  onShow() {
+    const app = getApp()
+    const picked = app.globalData.worksheetPick
+    if (picked && picked.length) {
+      app.globalData.worksheetPick = null
+      this.currentList = picked.slice()
+      this.setData({ source: 'current' }, () => this.resolveChars())
+    }
+  },
+
+  openPicker() {
+    getApp().globalData.worksheetPick = (this.currentList || this.data.chars || []).slice()
+    wx.navigateTo({ url: '/pages/pickchar/pickchar' })
+  },
+
   pickSource(e) {
     this.setData({ source: e.currentTarget.dataset.key }, () => this.resolveChars())
   },

@@ -1,0 +1,69 @@
+<view class="page pick">
+  <view class="tabs">
+    <view
+      class="tab {{tab === item.key ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="pickTab"
+    >{{item.name}}</view>
+  </view>
+
+  <block wx:if="{{tab === 'book'}}">
+    <scroll-view scroll-x class="chips-row" enable-flex>
+      <view
+        class="chip {{currentBookId === item.id ? 'active' : ''}}"
+        wx:for="{{books}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="pickBook"
+      >{{item.short}}</view>
+    </scroll-view>
+  </block>
+
+  <block wx:if="{{tab === 'theme'}}">
+    <scroll-view scroll-x class="chips-row" enable-flex>
+      <view
+        class="chip {{currentTheme === item.key ? 'active' : ''}}"
+        wx:for="{{themes}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="pickTheme"
+      >{{item.name}}</view>
+    </scroll-view>
+  </block>
+
+  <block wx:if="{{tab === 'custom'}}">
+    <view class="custom-row">
+      <input
+        class="custom-input"
+        placeholder="输入汉字，如：永和静学"
+        value="{{customText}}"
+        bindinput="onCustom"
+        bindconfirm="addCustom"
+        maxlength="100"
+      />
+      <view class="btn small" bindtap="addCustom">添加</view>
+    </view>
+  </block>
+
+  <view class="chars">
+    <view
+      class="c {{sel[item] ? 'on' : ''}}"
+      wx:for="{{chars}}"
+      wx:key="*this"
+      data-char="{{item}}"
+      bindtap="toggle"
+    >{{item}}</view>
+  </view>
+  <view class="muted empty" wx:if="{{tab !== 'custom' && !chars.length}}">该来源暂无可选汉字</view>
+  <view class="muted empty" wx:if="{{tab === 'custom'}}">输入后点「添加」加入已选</view>
+</view>
+
+<view class="bar">
+  <view class="bar-info">已选 <text class="strong">{{selCount}}</text> 字</view>
+  <view class="bar-actions">
+    <view class="btn ghost small" bindtap="clearSel">清空</view>
+    <view class="btn small" bindtap="done">生成字帖</view>
+  </view>
+</view>

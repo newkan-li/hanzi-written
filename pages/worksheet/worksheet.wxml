@@ -8,6 +8,7 @@
       data-key="{{item.key}}"
       bindtap="pickSource"
     >{{item.name}}</view>
+    <view class="chip pick-chip" bindtap="openPicker">选字…</view>
   </view>
 
   <view wx:if="{{source === 'template'}}" class="tpl-list">

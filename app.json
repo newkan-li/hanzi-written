@@ -11,6 +11,7 @@
     "pages/quiz/quiz",
     "pages/weak/weak",
     "pages/worksheet/worksheet",
+    "pages/pickchar/pickchar",
     "pages/poster/poster",
     "pages/scribe/scribe",
     "pages/traj/traj",
