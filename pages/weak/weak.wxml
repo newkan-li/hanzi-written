@@ -1,0 +1,23 @@
+<view class="page">
+  <view class="muted tip">在「描红 / 测验」中写错的字会自动收进生字本，方便重点复习。</view>
+
+  <view class="chars" wx:if="{{list.length}}">
+    <view
+      class="char-card card"
+      wx:for="{{list}}"
+      wx:key="char"
+      data-char="{{item.char}}"
+      bindtap="onTapChar"
+    >
+      <view class="char">{{item.char}}</view>
+      <view class="muted cnt">错 {{item.count}}</view>
+      <view class="del" catchtap="onRemove" data-char="{{item.char}}">×</view>
+    </view>
+  </view>
+  <view class="muted empty" wx:else>生字本是空的，去练几个字吧</view>
+
+  <view class="actions" wx:if="{{list.length}}">
+    <view class="btn" bindtap="onPracticeAll">全部练习</view>
+    <view class="btn ghost" bindtap="onClear">清空</view>
+  </view>
+</view>

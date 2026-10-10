@@ -5,6 +5,7 @@ const FAV_KEY = 'hw_favorites'
 const REC_KEY = 'hw_records'
 const PREF_KEY = 'hw_prefs'
 const CHECKIN_KEY = 'hw_checkins'
+const WEAK_KEY = 'hw_weak'
 
 /* ---------- 偏好 ---------- */
 function getPrefs() {
@@ -132,6 +133,36 @@ function getCheckinStats() {
   }
 }
 
+/* ---------- 生字本 / 错字本 ---------- */
+function getWeak() {
+  const map = wx.getStorageSync(WEAK_KEY) || {}
+  return Object.keys(map)
+    .map((char) => ({ char, count: map[char].count, lastTime: map[char].lastTime }))
+    .sort((a, b) => b.lastTime - a.lastTime)
+}
+
+function addWeak(char) {
+  const map = wx.getStorageSync(WEAK_KEY) || {}
+  const rec = map[char] || { count: 0, lastTime: 0 }
+  rec.count += 1
+  rec.lastTime = Date.now()
+  map[char] = rec
+  wx.setStorageSync(WEAK_KEY, map)
+  return rec
+}
+
+function removeWeak(char) {
+  const map = wx.getStorageSync(WEAK_KEY) || {}
+  if (map[char]) {
+    delete map[char]
+    wx.setStorageSync(WEAK_KEY, map)
+  }
+}
+
+function clearWeak() {
+  wx.removeStorageSync(WEAK_KEY)
+}
+
 /* ---------- 汇总 ---------- */
 function getStats() {
   const records = wx.getStorageSync(REC_KEY) || {}
@@ -141,6 +172,7 @@ function getStats() {
     charCount: chars.length,
     totalCount: chars.reduce((sum, c) => sum + records[c].count, 0),
     favCount: getFavorites().length,
+    weakCount: Object.keys(wx.getStorageSync(WEAK_KEY) || {}).length,
     days: checkinStats.totalDays,
     streak: checkinStats.streak
   }
@@ -159,5 +191,9 @@ module.exports = {
   clearRecords,
   checkin,
   getCheckinStats,
+  getWeak,
+  addWeak,
+  removeWeak,
+  clearWeak,
   getStats
 }

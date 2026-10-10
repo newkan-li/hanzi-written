@@ -29,6 +29,10 @@
       <view class="quick-name">生成字帖</view>
       <view class="muted">选字排版，导出打印</view>
     </view>
+    <view class="quick-item card" bindtap="onIdiom">
+      <view class="quick-name">成语练字</view>
+      <view class="muted">成语拼音与释义</view>
+    </view>
     <view class="quick-item card" bindtap="onPoster">
       <view class="quick-name">练习海报</view>
       <view class="muted">生成图片去分享</view>

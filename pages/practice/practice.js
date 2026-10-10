@@ -34,7 +34,8 @@ Page({
     error: '',
     isFav: false,
     practiced: 0,
-    info: null
+    note: null,
+    info: { pinyin: '', radical: '—', structure: '—', strokes: '—', words: [], meaning: '—' }
   },
 
   onLoad() {
@@ -52,6 +53,8 @@ Page({
     const char = list[index]
     const record = storage.addRecord(char)
     storage.checkin()
+    const note = app.globalData.practiceNote || null
+    app.globalData.practiceNote = null
 
     this.setData({
       chars: list,
@@ -59,6 +62,7 @@ Page({
       index,
       char,
       size,
+      note,
       gridStyle: storage.getPref('gridStyle', 'tian'),
       isFav: storage.isFavorite(char),
       practiced: record.count
@@ -124,6 +128,7 @@ Page({
         radical: dict.radical || '—',
         structure: dict.structure || '—',
         strokes: data && data.strokes ? data.strokes.length : '—',
+        words: dict.words || [],
         wordsText: dict.words ? dict.words.join(' / ') : '—',
         meaning: dict.meaning || '—'
       }
@@ -134,7 +139,7 @@ Page({
     this.destroyWriter()
     const { mode } = this.data
     const char = charArg || this.data.char
-    this.setData({ loading: true, error: '', info: null })
+    this.setData({ loading: true, error: '', info: { pinyin: '', radical: '—', structure: '—', strokes: '—', words: [], meaning: '—' } })
 
     try {
       this.writerCtx = createHanziWriterContext({
@@ -202,15 +207,23 @@ Page({
         leniency: 1.4,
         showHintAfterMisses: 1,
         markStrokeCorrectAfterMisses: 2,
-        highlightOnComplete: true
+        highlightOnComplete: true,
+        onMistake: () => storage.addWeak(this.data.char),
+        onComplete: () => this.onQuizComplete()
       })
     } else {
       this.writerCtx.quiz({
         leniency: 0.9,
         showHintAfterMisses: 3,
-        highlightOnComplete: true
+        highlightOnComplete: true,
+        onMistake: () => storage.addWeak(this.data.char),
+        onComplete: () => this.onQuizComplete()
       })
     }
+  },
+
+  onQuizComplete() {
+    wx.showToast({ title: '写好了！', icon: 'success' })
   },
 
   switchMode(e) {
@@ -224,6 +237,22 @@ Page({
     const gridStyle = e.currentTarget.dataset.key
     this.setData({ gridStyle })
     storage.setPref('gridStyle', gridStyle)
+  },
+
+  onWordTap(e) {
+    const word = e.currentTarget.dataset.word || ''
+    const chars = word.split('').filter((c) => /[\u4e00-\u9fa5]/.test(c))
+    if (!chars.length) return
+    const record = storage.addRecord(chars[0])
+    this.setData({
+      chars,
+      total: chars.length,
+      index: 0,
+      char: chars[0],
+      isFav: storage.isFavorite(chars[0]),
+      practiced: record.count
+    })
+    this.createWriter(chars[0])
   },
 
   replay() {

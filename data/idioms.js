@@ -1,0 +1,53 @@
+/**
+ * 成语练字：常用四字成语（本地数据，零后端）
+ * 用于「成语」页：查看拼音/释义，并按字练习。
+ */
+const idioms = [
+  { word: '一心一意', pinyin: 'yī xīn yī yì', meaning: '心思、意念专一，没有别的考虑。' },
+  { word: '温故知新', pinyin: 'wēn gù zhī xīn', meaning: '温习学过的知识，得到新的理解和体会。' },
+  { word: '勤能补拙', pinyin: 'qín néng bǔ zhuō', meaning: '勤奋能够弥补天赋的不足。' },
+  { word: '持之以恒', pinyin: 'chí zhī yǐ héng', meaning: '长久地坚持下去。' },
+  { word: '一丝不苟', pinyin: 'yī sī bù gǒu', meaning: '做事认真细致，一点也不马虎。' },
+  { word: '专心致志', pinyin: 'zhuān xīn zhì zhì', meaning: '一心一意，集中精神。' },
+  { word: '全神贯注', pinyin: 'quán shén guàn zhù', meaning: '全部精神集中在一点上。' },
+  { word: '聚精会神', pinyin: 'jù jīng huì shén', meaning: '集中精神，注意力高度集中。' },
+  { word: '日积月累', pinyin: 'rì jī yuè lěi', meaning: '一天天、一月月地不断积累。' },
+  { word: '锲而不舍', pinyin: 'qiè ér bù shě', meaning: '不停地雕刻，比喻坚持不懈。' },
+  { word: '水到渠成', pinyin: 'shuǐ dào qú chéng', meaning: '条件成熟，事情自然成功。' },
+  { word: '胸有成竹', pinyin: 'xiōng yǒu chéng zhú', meaning: '做事之前已有通盘考虑和把握。' },
+  { word: '精益求精', pinyin: 'jīng yì qiú jīng', meaning: '已经很好了还要求更好。' },
+  { word: '见多识广', pinyin: 'jiàn duō shí guǎng', meaning: '见过的多，知道的广。' },
+  { word: '博学多才', pinyin: 'bó xué duō cái', meaning: '学问广博，有多方面的才能。' },
+  { word: '出类拔萃', pinyin: 'chū lèi bá cuì', meaning: '才能高出同类之上。' },
+  { word: '画蛇添足', pinyin: 'huà shé tiān zú', meaning: '做了多余的事，反而把事情弄糟。' },
+  { word: '守株待兔', pinyin: 'shǒu zhū dài tù', meaning: '死守经验，不知变通；也指不劳而获。' },
+  { word: '亡羊补牢', pinyin: 'wáng yáng bǔ láo', meaning: '出了问题及时补救，还不算晚。' },
+  { word: '掩耳盗铃', pinyin: 'yǎn ěr dào líng', meaning: '自己欺骗自己。' },
+  { word: '自相矛盾', pinyin: 'zì xiāng máo dùn', meaning: '言语或行为前后互相抵触。' },
+  { word: '刻舟求剑', pinyin: 'kè zhōu qiú jiàn', meaning: '拘泥成法，不知变通。' },
+  { word: '拔苗助长', pinyin: 'bá miáo zhù zhǎng', meaning: '违反事物规律，急于求成。' },
+  { word: '井底之蛙', pinyin: 'jǐng dǐ zhī wā', meaning: '比喻见识狭小的人。' },
+  { word: '塞翁失马', pinyin: 'sài wēng shī mǎ', meaning: '坏事有时也能变成好事。' },
+  { word: '对症下药', pinyin: 'duì zhèng xià yào', meaning: '针对具体问题采取相应办法。' },
+  { word: '一鸣惊人', pinyin: 'yī míng jīng rén', meaning: '平时默默无闻，一下子做出惊人的成绩。' },
+  { word: '三顾茅庐', pinyin: 'sān gù máo lú', meaning: '诚心诚意地一再邀请。' },
+  { word: '卧薪尝胆', pinyin: 'wò xīn cháng dǎn', meaning: '刻苦自励，发愤图强。' },
+  { word: '闻鸡起舞', pinyin: 'wén jī qǐ wǔ', meaning: '有志向的人及时奋发努力。' },
+  { word: '悬梁刺股', pinyin: 'xuán liáng cì gǔ', meaning: '形容学习刻苦努力。' },
+  { word: '凿壁偷光', pinyin: 'záo bì tōu guāng', meaning: '家境贫寒仍刻苦读书。' },
+  { word: '囊萤映雪', pinyin: 'náng yíng yìng xuě', meaning: '家境贫寒仍勤学苦读。' },
+  { word: '手不释卷', pinyin: 'shǒu bù shì juàn', meaning: '书本不离手，形容勤奋好学。' },
+  { word: '学而不厌', pinyin: 'xué ér bù yàn', meaning: '学习总不感到满足。' },
+  { word: '不耻下问', pinyin: 'bù chǐ xià wèn', meaning: '乐于向学问或地位不如自己的人请教。' },
+  { word: '温文尔雅', pinyin: 'wēn wén ěr yǎ', meaning: '态度温和，举止文雅。' },
+  { word: '雪中送炭', pinyin: 'xuě zhōng sòng tàn', meaning: '在别人急需时给予帮助。' },
+  { word: '锦上添花', pinyin: 'jǐn shàng tiān huā', meaning: '在美好的基础上再增添美好。' },
+  { word: '助人为乐', pinyin: 'zhù rén wéi lè', meaning: '把帮助别人当作快乐的事。' },
+  { word: '光明磊落', pinyin: 'guāng míng lěi luò', meaning: '心地光明正大，胸怀坦白。' },
+  { word: '表里如一', pinyin: 'biǎo lǐ rú yī', meaning: '外表和内心完全一致。' },
+  { word: '言而有信', pinyin: 'yán ér yǒu xìn', meaning: '说话算数，讲信用。' },
+  { word: '一诺千金', pinyin: 'yī nuò qiān jīn', meaning: '许下的诺言极有信义。' },
+  { word: '尊老爱幼', pinyin: 'zūn lǎo ài yòu', meaning: '尊敬老人，爱护儿童。' }
+]
+
+module.exports = { idioms }

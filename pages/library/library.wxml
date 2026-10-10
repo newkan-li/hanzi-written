@@ -19,4 +19,5 @@
   </view>
 
   <view class="btn block" bindtap="onOpenWorksheet">用「入门基础」生成字帖</view>
+  <view class="btn ghost block" bindtap="onOpenIdiom">去「成语练字」</view>
 </view>

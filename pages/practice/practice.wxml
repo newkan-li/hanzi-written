@@ -6,6 +6,11 @@
     </view>
   </view>
 
+  <view class="note card" wx:if="{{note}}">
+    <view class="note-title">{{note.title}}</view>
+    <view class="muted">{{note.desc}}</view>
+  </view>
+
   <view class="stage card {{gridStyle === 'none' ? '' : 'with-grid grid-' + gridStyle}}">
     <hanzi-writer-view id="hz-writer" width="{{size}}" height="{{size}}" />
     <view class="loading" wx:if="{{loading}}">字库加载中…</view>
@@ -55,8 +60,19 @@
       <view class="info-item"><text class="k">笔画</text><text>{{info ? info.strokes : '—'}}</text></view>
       <view class="info-item"><text class="k">结构</text><text>{{info ? info.structure : '—'}}</text></view>
     </view>
-    <view class="info-line"><text class="k">组词</text><text>{{info ? info.wordsText : '—'}}</text></view>
-    <view class="info-line"><text class="k">释义</text><text>{{info ? info.meaning : '—'}}</text></view>
+    <view class="info-line">
+      <text class="k">组词</text>
+      <view class="word-chips">
+        <view
+          class="word-chip"
+          wx:for="{{info.words}}"
+          wx:key="*this"
+          data-word="{{item}}"
+          bindtap="onWordTap"
+        >{{item}}</view>
+      </view>
+    </view>
+    <view class="info-line"><text class="k">释义</text><text>{{info.meaning}}</text></view>
   </view>
 
   <view class="footer">

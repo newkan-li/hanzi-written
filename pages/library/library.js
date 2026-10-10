@@ -13,5 +13,9 @@ Page({
   onOpenWorksheet() {
     getApp().globalData.worksheetList = categories[0].chars
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
+  },
+
+  onOpenIdiom() {
+    wx.navigateTo({ url: '/pages/idiom/idiom' })
   }
 })

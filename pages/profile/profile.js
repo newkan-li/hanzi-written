@@ -2,7 +2,7 @@ const storage = require('../../utils/storage')
 
 Page({
   data: {
-    stats: { charCount: 0, totalCount: 0, favCount: 0, days: 0, streak: 0 },
+    stats: { charCount: 0, totalCount: 0, favCount: 0, weakCount: 0, days: 0, streak: 0 },
     checkin: { streak: 0, totalDays: 0, todayDone: false, recent: [] },
     favorites: [],
     records: []
@@ -38,6 +38,10 @@ Page({
   onMakeWorksheet() {
     getApp().globalData.worksheetList = storage.getFavorites()
     wx.navigateTo({ url: '/pages/worksheet/worksheet' })
+  },
+
+  onOpenWeak() {
+    wx.navigateTo({ url: '/pages/weak/weak' })
   },
 
   onClearRecords() {

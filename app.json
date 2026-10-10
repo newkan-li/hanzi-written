@@ -4,6 +4,8 @@
     "pages/library/library",
     "pages/category/category",
     "pages/practice/practice",
+    "pages/idiom/idiom",
+    "pages/weak/weak",
     "pages/worksheet/worksheet",
     "pages/poster/poster",
     "pages/profile/profile"

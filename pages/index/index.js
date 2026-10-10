@@ -51,6 +51,10 @@ Page({
     wx.navigateTo({ url: '/pages/poster/poster' })
   },
 
+  onIdiom() {
+    wx.navigateTo({ url: '/pages/idiom/idiom' })
+  },
+
   onTapChar(e) {
     const { char, chars } = e.currentTarget.dataset
     this.openPractice(chars || [char], (chars || [char]).indexOf(char))

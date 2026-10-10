@@ -1,0 +1,26 @@
+<view class="page">
+  <view class="search card">
+    <input
+      class="search-input"
+      placeholder="搜索成语，如：一"
+      value="{{keyword}}"
+      bindinput="onInput"
+    />
+  </view>
+
+  <view class="idioms">
+    <view
+      class="idiom card"
+      wx:for="{{list}}"
+      wx:key="word"
+      data-index="{{index}}"
+      bindtap="onTap"
+    >
+      <view class="idiom-word">{{item.word}}</view>
+      <view class="idiom-pinyin">{{item.pinyin}}</view>
+      <view class="muted idiom-meaning">{{item.meaning}}</view>
+    </view>
+  </view>
+
+  <view class="muted empty" wx:if="{{!list.length}}">没有找到相关成语</view>
+</view>
