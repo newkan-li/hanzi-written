@@ -1,23 +1,47 @@
 const { categories } = require('../../data/commonChars')
+const poems = require('../../data/poems')
 
 const PAGE_SIZE = 24
 
+function poemChars(lines) {
+  const set = new Set()
+  ;(lines || []).join('').split('').forEach((c) => {
+    if (/[\u4e00-\u9fa5]/.test(c)) set.add(c)
+  })
+  return Array.from(set)
+}
+
 Page({
   data: {
+    isPoem: false,
     name: '',
     desc: '',
+    // 汉字分页
     chars: [],
     page: 0,
     totalPages: 1,
     totalChars: 0,
     hasPrev: false,
-    hasNext: false
+    hasNext: false,
+    // 古诗一首一页
+    poem: null,
+    poemIndex: 0,
+    poemTotal: 0,
+    hasPrevPoem: false,
+    hasNextPoem: false
   },
 
   onLoad(options) {
     const key = options.key
     const category = categories.find((c) => c.key === key) || categories[0]
     wx.setNavigationBarTitle({ title: category.name })
+
+    if (category.key === 'poem') {
+      this.setData({ isPoem: true, name: category.name, desc: category.desc, poemTotal: poems.length })
+      this.setPoem(0)
+      return
+    }
+
     this.allChars = category.chars
     this.setData({
       name: category.name,
@@ -27,6 +51,7 @@ Page({
     this.setPage(0)
   },
 
+  /* ---------- 汉字分页 ---------- */
   setPage(p) {
     const totalPages = Math.max(1, Math.ceil(this.allChars.length / PAGE_SIZE))
     const page = Math.min(Math.max(p, 0), totalPages - 1)
@@ -55,5 +80,64 @@ Page({
     getApp().globalData.practiceList = this.allChars
     getApp().globalData.practiceIndex = index < 0 ? 0 : index
     wx.navigateTo({ url: '/pages/practice/practice' })
+  },
+
+  /* ---------- 古诗一首一页 ---------- */
+  setPoem(i) {
+    const index = Math.min(Math.max(i, 0), poems.length - 1)
+    const src = poems[index]
+    const chars = poemChars(src.lines)
+    this.setData({
+      poem: {
+        title: src.title,
+        dynasty: src.dynasty,
+        author: src.author,
+        lines: src.lines,
+        charLines: src.lines.map((l, li) =>
+          l.split('').map((c, ci) => ({ c, id: li + '-' + ci }))
+        ),
+        chars
+      },
+      poemIndex: index,
+      hasPrevPoem: index > 0,
+      hasNextPoem: index < poems.length - 1
+    })
+    wx.pageScrollTo({ scrollTop: 0, duration: 0 })
+  },
+
+  prevPoem() {
+    if (this.data.hasPrevPoem) this.setPoem(this.data.poemIndex - 1)
+  },
+
+  nextPoem() {
+    if (this.data.hasNextPoem) this.setPoem(this.data.poemIndex + 1)
+  },
+
+  onTapPoemChar(e) {
+    const char = e.currentTarget.dataset.char
+    const poem = this.data.poem
+    if (!poem) return
+    const chars = poem.chars
+    const index = chars.indexOf(char)
+    getApp().globalData.practiceList = chars
+    getApp().globalData.practiceIndex = index < 0 ? 0 : index
+    getApp().globalData.practiceNote = { title: poem.title, desc: `${poem.dynasty}·${poem.author}` }
+    wx.navigateTo({ url: '/pages/practice/practice' })
+  },
+
+  practicePoem() {
+    const poem = this.data.poem
+    if (!poem) return
+    getApp().globalData.practiceList = poem.chars
+    getApp().globalData.practiceIndex = 0
+    getApp().globalData.practiceNote = { title: poem.title, desc: `${poem.dynasty}·${poem.author}` }
+    wx.navigateTo({ url: '/pages/practice/practice' })
+  },
+
+  worksheetPoem() {
+    const poem = this.data.poem
+    if (!poem) return
+    getApp().globalData.worksheetList = poem.chars
+    wx.navigateTo({ url: '/pages/worksheet/worksheet' })
   }
 })

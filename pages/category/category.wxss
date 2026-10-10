@@ -78,3 +78,39 @@
   color: #8a8578;
   font-size: 28rpx;
 }
+
+/* 古诗一首一页 */
+.poem {
+  padding: 40rpx 32rpx;
+}
+.poem-title {
+  font-size: 44rpx;
+  font-family: "Songti SC", serif;
+}
+.poem-meta {
+  margin: 10rpx 0 28rpx;
+}
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+.line {
+  display: flex;
+  flex-wrap: wrap;
+}
+.pchar {
+  font-size: 40rpx;
+  line-height: 1.6;
+  letter-spacing: 6rpx;
+  font-family: "Songti SC", serif;
+  color: #2b2b2b;
+}
+.actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 40rpx;
+}
+.actions .btn {
+  flex: 1;
+}

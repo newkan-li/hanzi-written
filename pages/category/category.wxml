@@ -1,25 +1,56 @@
 <view class="page">
-  <view class="head">
-    <view class="head-name">{{name}}</view>
-    <view class="muted">{{desc}} · 共 {{totalChars}} 字</view>
-  </view>
-
-  <view class="chars">
-    <view
-      class="char-card"
-      wx:for="{{chars}}"
-      wx:key="*this"
-      data-char="{{item}}"
-      bindtap="onTapChar"
-    >
-      <view class="char">{{item}}</view>
-      <view class="grid-lines"></view>
+  <block wx:if="{{isPoem}}">
+    <view class="poem card" wx:if="{{poem}}">
+      <view class="poem-title">{{poem.title}}</view>
+      <view class="muted poem-meta">{{poem.dynasty}} · {{poem.author}}</view>
+      <view class="lines">
+        <view class="line" wx:for="{{poem.charLines}}" wx:for-item="line" wx:for-index="li" wx:key="li">
+          <text
+            class="pchar"
+            wx:for="{{line}}"
+            wx:for-item="ch"
+            wx:key="id"
+            data-char="{{ch.c}}"
+            bindtap="onTapPoemChar"
+          >{{ch.c}}</text>
+        </view>
+      </view>
+      <view class="actions">
+        <view class="btn" bindtap="practicePoem">练这首诗</view>
+        <view class="btn ghost" bindtap="worksheetPoem">生成字帖</view>
+      </view>
     </view>
-  </view>
 
-  <view class="pager" wx:if="{{totalPages > 1}}">
-    <view class="pg {{hasPrev ? '' : 'disabled'}}" bindtap="prev">上一页</view>
-    <view class="pg-info">{{page + 1}} / {{totalPages}}</view>
-    <view class="pg {{hasNext ? '' : 'disabled'}}" bindtap="next">下一页</view>
-  </view>
+    <view class="pager">
+      <view class="pg {{hasPrevPoem ? '' : 'disabled'}}" bindtap="prevPoem">上一首</view>
+      <view class="pg-info">{{poemIndex + 1}} / {{poemTotal}}</view>
+      <view class="pg {{hasNextPoem ? '' : 'disabled'}}" bindtap="nextPoem">下一首</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="head">
+      <view class="head-name">{{name}}</view>
+      <view class="muted">{{desc}} · 共 {{totalChars}} 字</view>
+    </view>
+
+    <view class="chars">
+      <view
+        class="char-card"
+        wx:for="{{chars}}"
+        wx:key="*this"
+        data-char="{{item}}"
+        bindtap="onTapChar"
+      >
+        <view class="char">{{item}}</view>
+        <view class="grid-lines"></view>
+      </view>
+    </view>
+
+    <view class="pager" wx:if="{{totalPages > 1}}">
+      <view class="pg {{hasPrev ? '' : 'disabled'}}" bindtap="prev">上一页</view>
+      <view class="pg-info">{{page + 1}} / {{totalPages}}</view>
+      <view class="pg {{hasNext ? '' : 'disabled'}}" bindtap="next">下一页</view>
+    </view>
+  </block>
 </view>
